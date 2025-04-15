@@ -1,24 +1,22 @@
-using BankingApp.Domain.Customer;
+using BankingApp.Domain.Customers;
 using Xunit;
 
-namespace BankingApp.Tests.BankCustomer
+namespace BankingApp.Tests.BankCustomers
 {  
     public class BankCustomerTests
     {
         private readonly Customer _bankCustomer1;
-         private readonly Customer _bankCustomer2;
+        private readonly Customer _bankCustomer2;
 
         public BankCustomerTests()
         {
             _bankCustomer1 = new Customer(
-                Guid.NewGuid(),
                 "Beka Buliskeria",
                 "abc@gmail.com",
                 new DateTime(2003, 8, 27)
             );
 
             _bankCustomer2 = new Customer(
-                Guid.NewGuid(),
                 "Zeragia",
                 "abcd@gmail.com",
                 new DateTime(2003, 2, 27)
