@@ -1,19 +1,20 @@
-namespace BankingApp.Domain.Customer
+namespace BankingApp.Domain.Customers
 {
     public class Customer
     {
         public Guid CustomerId { get; private set; }
-        public string FullName { get; private set; }
-        public string EmailAddress { get; private set; }
+        public string FullName { get; private set; } = string.Empty;
+        public string EmailAddress { get; private set; } = string.Empty;
         public DateTime DateOfBirth { get; private set; }
 
-        public Customer(Guid CustomerId, string FullName, string EmailAddress, DateTime DateOfBirth)
+        public Customer(string FullName, string EmailAddress, DateTime DateOfBirth)
         {
-            this.CustomerId = CustomerId;
+            this.CustomerId = new Guid();
             this.FullName = FullName;
             this.EmailAddress = EmailAddress;   
             this.DateOfBirth = DateOfBirth;
         }
+
         /*
          * Returns age according to the customer's brithday was this year or wasn't
         */
