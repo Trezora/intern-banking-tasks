@@ -9,7 +9,7 @@ namespace BankingApp.Domain.Customers
 
         public Customer(string FullName, string EmailAddress, DateTime DateOfBirth)
         {
-            this.CustomerId = new Guid();
+            this.CustomerId = Guid.NewGuid();
             this.FullName = FullName;
             this.EmailAddress = EmailAddress;   
             this.DateOfBirth = DateOfBirth;
