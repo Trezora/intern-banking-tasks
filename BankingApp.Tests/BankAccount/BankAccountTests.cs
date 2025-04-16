@@ -38,13 +38,14 @@ namespace BankingApp.Tests.BankAccounts
             {
                 _account.Deposit(-10.0m);
             });
+            Assert.Equal("$150.00", _account.Balance.ToString());
         }
 
         [Fact]
         public void TestValidAmountOfDeposit()
         {
             _account.Deposit(20.0m);
-            Assert.Equal( "$170.00", _account.Balance.ToString());
+            Assert.Equal("$170.00", _account.Balance.ToString());
         }
 
         [Fact]
