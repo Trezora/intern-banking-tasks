@@ -44,3 +44,21 @@ Assessment Focus:
     Object initialization flow
 
 Bonus: Loop to allow creating multiple accounts
+
+
+Goal: Introduce unit testing and testable logic
+
+Deliverable:
+    Method: Deposit(decimal amount) on BankAccount
+        Validates that amount > 0
+        Increases balance
+
+    Unit test project using xUnit:
+        Test deposit increases balance
+        Test deposit with a negative amount throws an exception
+
+Assessment Focus:
+    Method design + testability
+    Naming of test cases
+    Clean assertions
+

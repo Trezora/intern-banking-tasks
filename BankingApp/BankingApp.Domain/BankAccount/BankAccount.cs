@@ -17,6 +17,12 @@ namespace BankingApp.Domain.Accounts
             Balance = initialDeposit;
             AccountNumber = AccountNumber.GenerateAccountNumber();
         }
+
+        public void Deposit(decimal amount)
+        {   
+            // here we do not nee varification as we do it in Money 
+            Balance = Balance.Add(new Money(amount));
+        }
         public string PrintAccountSummary()
         {
             return $"Account Summary:\n" +
