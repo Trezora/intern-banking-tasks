@@ -26,9 +26,25 @@ namespace BankingApp.Tests.BankAccounts
         {
             var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                var invalidDeposit = new Money(-100.0m);
-                var invalidBankAccount = new BankAccount(_customer, invalidDeposit);
+                var invalidInitialDeposit = new Money(-100.0m);
+                var invalidBankAccount = new BankAccount(_customer, invalidInitialDeposit);
             });
+        }
+
+        [Fact]
+        public void TestInvalidAmountOfDeposit_throwsArgumentOutOfRangeException()
+        {
+            var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                _account.Deposit(-10.0m);
+            });
+        }
+
+        [Fact]
+        public void TestValidAmountOfDeposit()
+        {
+            _account.Deposit(20.0m);
+            Assert.Equal( "$170.00", _account.Balance.ToString());
         }
 
         [Fact]
