@@ -19,7 +19,7 @@ public sealed class Money : ValueObject
 
     public static Money Add(Money initial, Money final) => new(initial.Value + final.Value);
 
-    public static Money Subtract(Money initial, Money final) => new(initial.Value + final.Value);
+    public static Money Subtract(Money initial, Money final) => new(initial.Value - final.Value);
 
     public override string ToString() => $"${Value:N2}";
 
