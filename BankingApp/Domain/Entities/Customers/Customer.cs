@@ -20,6 +20,7 @@ public sealed class Customer : Entity
     public int GetAge()
     {
         var age = DateTime.Today.Year - DateOfBirth.Year;
+        
         return (DateOfBirth.Date > DateTime.Today.AddYears(-age)) ? --age : age;
     }
 
