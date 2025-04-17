@@ -47,7 +47,7 @@ public class BankAccountTests
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            bankAccount.Deposit(-150.00m));
+            bankAccount.Deposit(-10.00m));
     }
 
     [Fact]
