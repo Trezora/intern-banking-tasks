@@ -18,10 +18,7 @@ public sealed class BankAccount : Entity
         Customer = customer;
     }
 
-    public void Deposit(decimal amount)
-    {
-        Balance = Money.Add(Balance, Money.Create(amount));
-    }
+    public void Deposit(decimal amount) => Balance = Money.Add(Balance, Money.Create(amount));
 
     public string PrintAccountSummary() =>  "BankAcount summary:\n" +
                                             $"  - Customer: \n" +
