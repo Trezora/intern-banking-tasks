@@ -17,4 +17,15 @@ public sealed class Customer : Entity
         DateOfBirth = dateOfBirth;
     }
 
+    public int GetAge()
+    {
+        var age = DateTime.Today.Year - DateOfBirth.Year;
+        return (DateOfBirth.Date > DateTime.Today.AddYears(-age)) ? --age : age;
+    }
+
+    public string GetCustomerSummary() =>  "Customer summary:\n" +
+                                            $"  - Full name: {FullName.ToString()}\n" +
+                                            $"  - Email: {EmailAddress.ToString()}\n" +
+                                            $"  - DateTime: {DateOfBirth.ToString("yyyy-MM-dd")}";
+
 }
