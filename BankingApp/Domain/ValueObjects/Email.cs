@@ -16,10 +16,12 @@ public sealed class Email : ValueObject
 
     public override IEnumerable<object> GetAtomicValues()
     {   
-        yield return Value;
+        yield return NormalizedValue;
     }
 
     public override string ToString() => Value;
+
+    public string NormalizedValue => Value.ToLowerInvariant();
 
     public static Email Create(string value)
     {   

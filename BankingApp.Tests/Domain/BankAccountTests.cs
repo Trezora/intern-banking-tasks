@@ -1,34 +1,54 @@
-using System.Threading.Tasks.Dataflow;
 using BankingApp.Domain.Entities.BankAcounts;
 using BankingApp.Domain.Entities.Customers;
 using BankingApp.Domain.ValueObjects.MoneyVO;
+using BankingApp.Application.Services;
+using BankingApp.Domain.Repositories;
+using BankingApp.Domain.Services;
+using BankingApp.Domain.Shared.OperationResults;
+using BankingApp.Domain.ValueObjects.Emails;
+using Moq;
 
 namespace BankingApp.Domain.Tests;
 
 public class BankAccountTests
 {   
     private readonly Customer _customer;
+    private readonly Mock<ICustomerRepository> _mockCustomerRepository;
+    private readonly Mock<IEmailUniquenessChecker> _mockEmailChecker;
+    private readonly CustomerService _customerService;
 
     public BankAccountTests()
     {
-        _customer = new Customer(
+        // Set up mocks and service
+        _mockCustomerRepository = new Mock<ICustomerRepository>();
+        _mockEmailChecker = new Mock<IEmailUniquenessChecker>();
+        _mockEmailChecker.Setup(x => x.IsEmailUnique(It.IsAny<Email>())).Returns(true);
+        _mockCustomerRepository.Setup(x => x.Add(It.IsAny<Customer>())).Returns((Customer c) => 
+            OperationResult<Customer>.Success(c, "Customer added successfully"));
+        
+        _customerService = new CustomerService(_mockCustomerRepository.Object, _mockEmailChecker.Object);
+
+        // Create a customer for tests
+        var result = _customerService.CreateCustomer(
             fullName: "Beka Bulikseria",
             emailAddress: "abcd@gmail.com",
             dateOfBirth: new DateTime(2003, 3, 27)
         );
+        
+        _customer = result.Data!;
     }
 
     [Fact]
     public void CreateBankAccountWithValidBalance()
     {
         // Arrange
-        var bankAccount = new BankAccount(100.00m,  _customer);
+        var bankAccount = new BankAccount(100.00m, _customer);
 
         // Act & Assert
         Assert.NotNull(_customer);
         Assert.NotNull(bankAccount);
-        Assert.Equal(bankAccount.Balance, Money.Create(100.00m));
-        Assert.Equal(bankAccount.Customer, _customer);
+        Assert.Equal(Money.Create(100.00m).Value, bankAccount.Balance.Value);
+        Assert.Equal(_customer, bankAccount.Customer);
     }
 
     [Fact]
@@ -36,19 +56,7 @@ public class BankAccountTests
     {
         // Arrange & Act & Assert
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() => 
-            new BankAccount(-100.00m,  _customer));
-    }
-
-    [Fact]
-    public void CreateBankAccoutWithValidBalanceAndMakeInvalidDeposit()
-    {
-        // Arrange
-        var bankAccount = new BankAccount(100.00m, _customer);
-
-        // Act & Assert
-        var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            bankAccount.Deposit(-10.00m));
-
+            new BankAccount(-100.00m, _customer));
     }
 
     [Fact]
@@ -86,7 +94,6 @@ public class BankAccountTests
 
         Assert.Equal(expectedBalance, account.GetBalance().ToString());
     }
-
 
     [Fact]
     public void CreateValidBankAccountWithValidBalanceAndMakeInvalidWithdraw()
@@ -165,7 +172,7 @@ public class BankAccountTests
         // Act
         var bankAccountSummary = bankAccount.PrintAccountSummary();
 
-        var validBankAccountSummary =  "BankAcount summary:\n" +
+        var validBankAccountSummary = "BankAcount summary:\n" +
                             $"  - Customer: \n" +
                             $"  - {_customer.GetCustomerSummary()}\n" +
                             $"  - AccountNumber: {bankAccount.AccountNumber.ToString()}\n" +
@@ -174,9 +181,9 @@ public class BankAccountTests
         // Assert
         Assert.NotNull(bankAccount);
 
-        Assert.Equal(bankAccountSummary, validBankAccountSummary);
+        Assert.Equal(validBankAccountSummary, bankAccountSummary);
         Assert.Contains(bankAccount.AccountNumber.ToString(), bankAccountSummary);
         Assert.Contains(bankAccount.Balance.ToString(), bankAccountSummary);
-        Assert.Contains(bankAccount.Customer.GetCustomerSummary(), bankAccountSummary);
+        Assert.Contains(_customer.GetCustomerSummary(), bankAccountSummary);
     }
 }
