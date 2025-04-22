@@ -48,6 +48,7 @@ public class BankAccountTests
         // Act & Assert
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
             bankAccount.Deposit(-10.00m));
+
     }
 
     [Fact]
@@ -57,10 +58,11 @@ public class BankAccountTests
         var bankAccount = new BankAccount(100.00m, _customer);
 
         // Act
-        bankAccount.Deposit(100.00m);
+        var result = bankAccount.Deposit(100.00m);
 
         // Assert
-        Assert.Equal("$200.00", bankAccount.Balance.ToString());
+        Assert.True(result.IsSuccess);
+        Assert.Equal("$200.00", bankAccount.GetBalance().ToString());
     }
 
     [Theory]
@@ -72,18 +74,86 @@ public class BankAccountTests
         double[] depositAmounts,
         string expectedBalance)
     {
-
         // Arrange
         var account = new BankAccount(initialDeposit, _customer);
 
+        // Act & Assert
+        foreach (var amount in depositAmounts.Select(a => (decimal)a))
+        {
+            var result = account.Deposit(amount);
+            Assert.True(result.IsSuccess, $"Deposit failed: {result.Message}");
+        }
+
+        Assert.Equal(expectedBalance, account.GetBalance().ToString());
+    }
+
+
+    [Fact]
+    public void CreateValidBankAccountWithValidBalanceAndMakeInvalidWithdraw()
+    {
+        // Arrange
+        var bankAccount = new BankAccount(500.00m, _customer);
+
         // Act
-        depositAmounts
-            .Select(amount => (decimal)amount)
-            .ToList()
-            .ForEach(account.Deposit);
+        var result = bankAccount.Withdraw(501.00m);
 
         // Assert
-        Assert.Equal(expectedBalance, account.Balance.ToString());
+        Assert.False(result.IsSuccess);
+        Assert.Equal("Failure: Insufficient funds.", result.Message);
+    }
+
+    [Theory]
+    [InlineData(500.00, new double[] {10.00, 150.00, 30.00}, "$310.00")]
+    [InlineData(500.00, new double[] {100.00, 250.00, 50.00}, "$100.00")]
+    [InlineData(500.00, new double[] {125.00, 5.00, 0.00}, "$370.00")]
+    public void CreateValidBankAccountWithValidBalanceAndMakeValidSeveralWithdraw(
+        decimal initialDeposit,
+        double[] withdrawAmounts, 
+        string expectedBalance)
+    {
+        // Arrange
+        var account = new BankAccount(initialDeposit, _customer);
+
+        // Act & Assert
+        foreach (var amount in withdrawAmounts.Select(a => (decimal)a))
+        {
+            var result = account.Withdraw(amount);
+            Assert.True(result.IsSuccess, $"Withdraw failed: {result.Message}");
+        }
+
+        Assert.Equal(expectedBalance, account.GetBalance().ToString());
+    }
+
+    [Theory]
+    [InlineData(300.00, new double[] { 0.00, 290.00, 10.00, 5.00, 10.00, 25.00 }, "$0.00")]
+    public void CreateValidBankAccountWithValidBalanceAndMakeSeveralDepositAndWithdraw(
+        decimal initialDeposit,
+        double[] transactionAmounts,
+        string expectedBalance)
+    {
+        // Arrange
+        var account = new BankAccount(initialDeposit, _customer);
+
+        // Act & Assert
+        transactionAmounts
+            .Select((amount, index) => new { Amount = (decimal)amount, Index = index })
+            .ToList()
+            .ForEach(entry =>
+            {
+                if (entry.Index % 2 == 0)
+                {
+                    var result = account.Deposit(entry.Amount);
+                    Assert.True(result.IsSuccess, $"Deposit failed at index {entry.Index}: {result.Message}");
+                }
+                else
+                {
+                    var result = account.Withdraw(entry.Amount);
+                    Assert.True(result.IsSuccess, $"Withdraw failed at index {entry.Index}: {result.Message}");
+                }
+            });
+
+        // Assert final balance
+        Assert.Equal(expectedBalance, account.GetBalance().ToString());
     }
 
     [Fact]

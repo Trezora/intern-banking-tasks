@@ -1,4 +1,5 @@
 using BankingApp.Domain.Entities.Customers;
+using BankingApp.Domain.Shared.OperationResults;
 using BankingApp.Domain.ValueObjects.AccountNumbers;
 using BankingApp.Domain.ValueObjects.MoneyVO;
 
@@ -18,7 +19,29 @@ public sealed class BankAccount : Entity
         Customer = customer;
     }
 
-    public void Deposit(decimal amount) => Balance = Money.Add(Balance, Money.Create(amount));
+    public OperationResult<Money> Deposit(decimal amount)
+    {
+        var result = Money.Add(Balance, Money.Create(amount));
+
+        if (!result.IsSuccess) return result;
+
+        Balance = result.Data!;
+        
+        return result;
+    }
+
+    public OperationResult<Money> Withdraw(decimal amount)
+    {
+        var result = Money.Subtract(Balance, Money.Create(amount));
+
+        if (!result.IsSuccess) return result;
+
+        Balance = result.Data!;
+
+        return result;
+    }
+
+    public Money GetBalance() => Balance;
 
     public string PrintAccountSummary() =>  "BankAcount summary:\n" +
                                             $"  - Customer: \n" +
