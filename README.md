@@ -17,7 +17,7 @@ Assessment Focus:
 
 Bonus: Return age from DateOfBirth
 
-
+######################################################
 
 Goal: Practice control flow and input/output
 
@@ -45,6 +45,7 @@ Assessment Focus:
 
 Bonus: Loop to allow creating multiple accounts
 
+######################################################
 
 Goal: Introduce unit testing and testable logic
 
@@ -62,3 +63,35 @@ Assessment Focus:
     Naming of test cases
     Clean assertions
 
+
+######################################################
+
+Task 1: Design a BankAccount Class with Behavior
+
+Goal: Model a proper object with data + behavior (not just a data bag)
+
+Deliverable:
+    Class: BankAccount
+    Private fields for Balance, AccountNumber
+    Constructor sets AccountNumber and initial balance
+
+Methods:
+    Deposit(decimal amount)
+    Withdraw(decimal amount)
+    GetBalance()
+
+Requirements:
+    Guard conditions (no negative deposits, no overdrafts)
+    Use Guid for AccountNumber
+    Use private setters to enforce encapsulation
+
+Assessment Focus:
+    Class structure
+    Use of private fields
+    Validation inside methods
+    Encapsulation
+
+Bonus: Return OperationResult with success/failure on Withdraw
+
+
+######################################################
