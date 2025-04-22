@@ -30,7 +30,6 @@ public sealed class BankAccount : Entity
         return result;
     }
 
-
     public OperationResult<Money> Withdraw(decimal amount)
     {
         var result = Money.Subtract(Balance, Money.Create(amount));
@@ -41,7 +40,6 @@ public sealed class BankAccount : Entity
 
         return result;
     }
-
 
     public Money GetBalance() => Balance;
 

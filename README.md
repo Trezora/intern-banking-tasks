@@ -95,3 +95,23 @@ Bonus: Return OperationResult with success/failure on Withdraw
 
 
 ######################################################
+
+Goal: Practice composition and constructor-based dependency
+
+Deliverable:
+    Class: Customer
+    Properties:
+        CustomerId (GUID)
+        FullName, EmailAddress
+        List of BankAccount (owned accounts)
+
+    Method:
+        OpenNewAccount(initialDeposit) → creates and adds new BankAccount
+        ListAccounts() → returns summaries
+
+    Assessment Focus:
+        Object composition (Customer owns BankAccount)
+        Controlled object creation via method
+        Use of constructors and immutability
+
+    Bonus: Prevent duplicate emails (case-insensitive)
