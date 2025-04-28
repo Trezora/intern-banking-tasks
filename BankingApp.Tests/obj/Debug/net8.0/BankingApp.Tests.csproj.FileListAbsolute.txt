@@ -104,3 +104,8 @@
 /Users/bekabuliskeria/Desktop/intern/intern-banking-tasks/BankingApp.Tests/obj/Debug/net8.0/BankingApp.Tests.pdb
 /Users/bekabuliskeria/Desktop/intern/intern-banking-tasks/BankingApp.Tests/obj/Debug/net8.0/BankingApp.Tests.genruntimeconfig.cache
 /Users/bekabuliskeria/Desktop/intern/intern-banking-tasks/BankingApp.Tests/obj/Debug/net8.0/ref/BankingApp.Tests.dll
+/Users/bekabuliskeria/Desktop/intern/intern-banking-tasks/BankingApp.Tests/bin/Debug/net8.0/Castle.Core.dll
+/Users/bekabuliskeria/Desktop/intern/intern-banking-tasks/BankingApp.Tests/bin/Debug/net8.0/Moq.dll
+/Users/bekabuliskeria/Desktop/intern/intern-banking-tasks/BankingApp.Tests/bin/Debug/net8.0/System.Diagnostics.EventLog.dll
+/Users/bekabuliskeria/Desktop/intern/intern-banking-tasks/BankingApp.Tests/bin/Debug/net8.0/runtimes/win/lib/net6.0/System.Diagnostics.EventLog.Messages.dll
+/Users/bekabuliskeria/Desktop/intern/intern-banking-tasks/BankingApp.Tests/bin/Debug/net8.0/runtimes/win/lib/net6.0/System.Diagnostics.EventLog.dll

@@ -9,24 +9,25 @@ public sealed class Customer : Entity
     public Name FullName { get; private set; }
     public Email EmailAddress { get; private set; }
     public DateTime DateOfBirth { get; private set; }
-    public List<BankAccount> BankAccounts { get; private set; }
+    private readonly List<BankAccount> _bankAccounts;
+    public IReadOnlyCollection<BankAccount> BankAccounts => _bankAccounts.AsReadOnly();
 
-    public Customer(string fullName, string emailAddress, DateTime dateOfBirth) 
+    internal Customer(string fullName, string emailAddress, DateTime dateOfBirth) 
             : base(Guid.NewGuid())
     {
         FullName = Name.Create(fullName);
         EmailAddress = Email.Create(emailAddress);
         DateOfBirth = dateOfBirth;
-        BankAccounts = new List<BankAccount>();
+        _bankAccounts = new List<BankAccount>();
     }
 
-    public void OpenNewAccount(decimal initialDeposit) => BankAccounts.Add(new BankAccount(initialDeposit, this));
+    public void OpenNewAccount(decimal initialDeposit) => _bankAccounts.Add(new BankAccount(initialDeposit, this));
     
     public string ListAccounts()
     {
-        if (!BankAccounts.Any()) return "No accounts found for this customer.";
+        if (!_bankAccounts.Any()) return "No accounts found for this customer.";
 
-        var summaries = BankAccounts
+        var summaries = _bankAccounts
             .Select(account => account.PrintAccountSummary())
             .ToList();
 
