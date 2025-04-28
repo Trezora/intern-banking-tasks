@@ -73,7 +73,7 @@ public class BankAccountTests
 
         // Assert
         Assert.False(operationResult.Result);
-        Assert.Equal("Withdraw failed: Depost money amount cannot be zero.", operationResult.Message);
+        Assert.Equal("Withdraw failed: Deposit money amount cannot be zero.", operationResult.Message);
         Assert.Equal($"  - Balance: Money {{ Value = {0.00m} }}", bankAccount.GetBalance());
     }
 
