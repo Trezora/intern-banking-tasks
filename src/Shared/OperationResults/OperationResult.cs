@@ -2,12 +2,12 @@ namespace Shared.OperationResults;
 
 public sealed class OperationResult
 {
-    public bool Success { get; }
+    public bool Result { get; }
     public string Message { get; }
     
-    private OperationResult(bool success, string message)
+    private OperationResult(bool result, string message)
     {
-        Success = success;
+        Result = result;
         Message = message;
     }
 

@@ -23,13 +23,15 @@ public sealed class Customer
         DateOfBirth = dateOfBirth;
     }
 
-    public void OpenNewAccount(decimal initialDeposit = 0)
+    public BankAccount OpenNewAccount(decimal initialDeposit = 0)
     {
         BankAccount newAccount = initialDeposit > 0
             ? new BankAccount(new Money(initialDeposit), this)
             : new BankAccount(this);
 
             _accounts.Add(newAccount);
+        
+        return newAccount;
     }
 
     public IEnumerable<string> ListAccounts()
@@ -48,7 +50,7 @@ public sealed class Customer
     }
 
     public string GetCustomerSummary() =>  "Customer summary:\n" +
-                                            $"  - Full name: {FullName.ToString()}\n" +
-                                            $"  - Email: {EmailAddress.ToString()}\n" +
-                                            $"  - DateTime: {DateOfBirth.ToString("yyyy-MM-dd")}";
+                                            $"  - Full name: {FullName.Value}\n" +
+                                            $"  - Email: {EmailAddress.Value}\n" +
+                                            $"  - DateTime: {DateOfBirth:yyyy-MM-dd}";
 }
