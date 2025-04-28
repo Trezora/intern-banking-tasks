@@ -115,3 +115,21 @@ Deliverable:
         Use of constructors and immutability
 
     Bonus: Prevent duplicate emails (case-insensitive)
+
+
+#####################################################
+    
+Goal: Apply Single Responsibility Principle and Open/Closed Principle
+
+Deliverable:
+    Refactor logic so:
+    BankAccount focuses only on state and rules
+    Move logic like overdraft notification or logging into separate service class (e.g., AccountNotifier)
+    Add interface ITransactionLogger with implementation ConsoleTransactionLogger
+
+Assessment Focus:
+    Class responsibility separation
+    Open/closed extension via interfaces
+    Interface implementation and dependency usage
+
+Bonus: Inject logger into account class (constructor or method param)
