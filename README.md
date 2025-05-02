@@ -154,3 +154,18 @@ Assessment Focus:
     Constructor injection and service separation
 
 Bonus: Introduce simple validation rules via separate class (e.g., CustomerValidator)
+
+
+Goal: Reinforce clean code practices
+
+Deliverable:
+    Push all work into GitHub repo under feature/oop-srp-refactor
+    Open a Pull Request with:
+    Summary of changes
+    Justification of design choices
+    Screenshots of test results
+
+Assessment Focus:
+    Code readability and structure
+    Naming, formatting, separation of concerns
+    PR quality and professionalism
