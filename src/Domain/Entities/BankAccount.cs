@@ -8,7 +8,7 @@ namespace Domain.Entities;
 
 public sealed class BankAccount
 {   
-    private readonly Guid _accountNumber;
+    public Guid AccountNumber { get; private set; }
     private Money _balance;
     public Customer Customer { get; private set; }
 
@@ -21,7 +21,7 @@ public sealed class BankAccount
         ITransactionLogger? transactionLogger = null,
         IAccountNotifier? accountNotifier = null)
     {   
-        _accountNumber = Guid.NewGuid();
+        AccountNumber = Guid.NewGuid();
         _balance = balance;
         Customer = customer;
         _transactionLogger = transactionLogger;
@@ -33,7 +33,7 @@ public sealed class BankAccount
         ITransactionLogger? transactionLogger = null,
         IAccountNotifier? accountNotifier = null)
     {
-        _accountNumber = Guid.NewGuid();
+        AccountNumber = Guid.NewGuid();
         _balance = new Money(0.00m);
         Customer = customer;
         _transactionLogger = transactionLogger;
@@ -45,14 +45,14 @@ public sealed class BankAccount
         if (amount == 0)
         {
             var errorMessage = "Deposit failed: Deposit money amount cannot be zero.";
-            _transactionLogger?.LogFailedTransaction(_accountNumber, errorMessage);
+            _transactionLogger?.LogFailedTransaction(AccountNumber, errorMessage);
 
             return OperationResult.Failed("Withdraw failed: Deposit money amount cannot be zero.");
         }
              
         _balance = _balance.Add(new Money(amount));
-        _transactionLogger?.LogDeposit(_accountNumber, amount, _balance);
-        _accountNotifier?.NotifySuccessfulDeposit(_accountNumber, Customer.FullName, Customer.EmailAddress, amount);
+        _transactionLogger?.LogDeposit(AccountNumber, amount, _balance);
+        _accountNotifier?.NotifySuccessfulDeposit(AccountNumber, Customer.FullName, Customer.EmailAddress, amount);
 
         return OperationResult.Succeeded("Deposit succeeded.");
     }
@@ -62,7 +62,7 @@ public sealed class BankAccount
         if (amount == 0)
         {   
             var errorMessage = "Withdraw failed: Withdraw money amount cannot be zero.";
-            _transactionLogger?.LogFailedTransaction(_accountNumber, errorMessage);
+           _transactionLogger?.LogFailedTransaction(AccountNumber, errorMessage);
 
             return OperationResult.Failed("Withdraw failed: Withdraw Money amount cannot be zero.");
         }
@@ -70,14 +70,14 @@ public sealed class BankAccount
         if (amount > _balance.Value)
         {   
             var errorMessage = "Withdraw failed: Insufficient funds.";
-            _transactionLogger?.LogFailedTransaction(_accountNumber, errorMessage);
+            _transactionLogger?.LogFailedTransaction(AccountNumber, errorMessage);
 
             return OperationResult.Failed("Withdraw failed: Insuficient funds.");
         }
             
         _balance = _balance.Subtract(new Money(amount));
-        _transactionLogger?.LogWithdrawal(_accountNumber, amount, _balance);
-        _accountNotifier?.NotifySuccessfulWithdrawal(_accountNumber, Customer.FullName, Customer.EmailAddress, amount);
+        _transactionLogger?.LogWithdrawal(AccountNumber, amount, _balance);
+        _accountNotifier?.NotifySuccessfulWithdrawal(AccountNumber, Customer.FullName, Customer.EmailAddress, amount);
 
         return OperationResult.Succeeded("Withdraw succeeded.");
     }
@@ -86,6 +86,6 @@ public sealed class BankAccount
 
     public string PrintAccountSummary() =>  "BankAcount summary:\n" +
                                             $"  - Customer: {Customer.FullName}\n" +
-                                            $"  - AccountNumber: {_accountNumber}\n" +
+                                            $"  - AccountNumber: {AccountNumber}\n" +
                                             $"  - Balance: {_balance:C}";
 }

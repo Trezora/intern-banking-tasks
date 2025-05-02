@@ -133,3 +133,24 @@ Assessment Focus:
     Interface implementation and dependency usage
 
 Bonus: Inject logger into account class (constructor or method param)
+
+#####################################################
+
+Goal: Demonstrate Interface Segregation and test-friendly design
+
+Scenario:
+    You need a service that processes customer onboarding and creates their default account.
+
+Deliverable:
+    Interface: ICustomerOnboardingService
+    Implementation: CustomerOnboardingService
+        Takes a Customer and auto-creates an account with base balance
+        Logs onboarding via ILogger
+    Write unit test mocking the logger and asserting onboarding logic
+
+Assessment Focus:
+    Interface-first design
+    Testability via abstraction
+    Constructor injection and service separation
+
+Bonus: Introduce simple validation rules via separate class (e.g., CustomerValidator)

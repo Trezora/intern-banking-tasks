@@ -1,5 +1,7 @@
 
-namespace Domain.Services;
+using Domain.Services;
+
+namespace Infrasturcture.Logging;
 
 public class ConsoleTransactionLogger : ITransactionLogger
 {

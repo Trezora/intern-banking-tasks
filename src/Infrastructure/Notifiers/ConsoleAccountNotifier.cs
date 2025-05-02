@@ -1,5 +1,7 @@
 using Domain.Services;
 
+namespace Infrasturcture.Notifiers;
+
 public class ConsoleAccountNotifier : IAccountNotifier
 {
     public void NotifySuccessfulDeposit(Guid accountNumber, string customerName, string email, decimal amount)
