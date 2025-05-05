@@ -1,8 +1,9 @@
 using Banking.Domain.Exceptions;
+using Banking.Domain.Primitives;
 
 namespace Banking.Domain.ValueObjects;
 
-public record Email
+public sealed class Email : ValueObject
 {
     public string Value { get; }
 
@@ -27,7 +28,12 @@ public record Email
         {
             return false;
         }
-    }    
+    }
+
+    protected override IEnumerable<object> GetAtomicValues()
+    {
+        yield return Value;
+    }
 
     public static implicit operator string(Email email)
         => email.Value;
