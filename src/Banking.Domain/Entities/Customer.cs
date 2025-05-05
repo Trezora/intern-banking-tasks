@@ -12,7 +12,7 @@ public sealed class Customer
     public IReadOnlyCollection<BankAccount> Accounts => _accounts.AsReadOnly();
 
     internal Customer(
-        Guid id,
+        Guid id, 
         Name fullName,
         Email email,
         DateTime dateOfBirth)
@@ -26,8 +26,8 @@ public sealed class Customer
     public BankAccount OpenNewAccount(decimal initialDeposit = 0)
     {
         BankAccount newAccount = initialDeposit > 0
-            ? new BankAccount(new Money(initialDeposit), this)
-            : new BankAccount(this);
+            ? new BankAccount(Guid.NewGuid(), new Money(initialDeposit), this)
+            : new BankAccount(Guid.NewGuid(), this);
 
             _accounts.Add(newAccount);
         

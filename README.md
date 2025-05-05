@@ -169,3 +169,50 @@ Assessment Focus:
     Code readability and structure
     Naming, formatting, separation of concerns
     PR quality and professionalism
+
+
+#####################################################
+
+Goal: Set up a baseline project structure using Clean Architecture.
+
+    Deliverable:
+        Solution structure with:
+            Banking.Domain
+            Banking.Application
+            Banking.Infrastructure
+            Banking.API
+            Each project references only what it should (Domain has no deps, API has all)
+
+    Assessment Focus:
+        Correct project references
+        Separation of concerns
+        Naming conventions
+
+    Bonus: Add .sln file and GitHub repo setup (feature/clean-arch-scaffold)
+
+
+#####################################################
+
+Goal: Create a rich domain model using proper DDD patterns.
+
+Deliverable:
+    In Banking.Domain.Entities:
+        Customer aggregate root with:
+        CustomerId (Value Object)
+        FullName, EmailAddress (Value Objects)
+        List<BankAccount>
+        Method: OpenAccount(initialDeposit)
+
+    Value Objects:
+        EmailAddress with validation
+        Money (amount + currency)
+
+    Domain Event: CustomerRegisteredEvent
+
+Assessment Focus:
+    Aggregate boundaries and invariants
+    Use of private setters and encapsulation
+    Constructor enforcement
+    Proper use of domain events
+
+Bonus: Make entities immutable where possible

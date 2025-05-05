@@ -2,7 +2,7 @@ using Banking.Domain.Exceptions;
 
 namespace Banking.Domain.ValueObjects;
 
-public record Money
+public sealed class Money : ValueObject
 {
     public decimal Value { get; }
 
@@ -25,6 +25,14 @@ public record Money
     
     public Money Subtract(Money other)
         =>  new(Value - other.Value);
-    
 
+    protected override IEnumerable<object> GetAtomicValues()
+    {
+        yield return Value;
+    }
+
+    public override string ToString()
+    {
+        return $"Money {{ Value = {Value:0.00} }}";
+    }
 }

@@ -23,6 +23,7 @@ public class BankAccountTests
     {   
         // Arrange
         var bankAccount = new BankAccount(
+            Guid.NewGuid(),
             _customer
         );
 
@@ -40,7 +41,7 @@ public class BankAccountTests
     {
         // Arrange & Act & Assert
         var exception = Assert.Throws<NegativeMoneyAmountException>(() =>
-            new BankAccount(-100.00m, _customer));
+            new BankAccount(Guid.NewGuid(), -100.00m, _customer));
     }
 
     [Fact]
@@ -48,6 +49,7 @@ public class BankAccountTests
     {   
         // Arrange
         var bankAccount = new BankAccount(
+            Guid.NewGuid(),
             _customer
         );
 
@@ -65,6 +67,7 @@ public class BankAccountTests
     {
         // Arrange
         var bankAccount = new BankAccount(
+            Guid.NewGuid(),
             _customer
         );
 
@@ -82,6 +85,7 @@ public class BankAccountTests
     {
         // Arrange
         var bankAccount = new BankAccount(
+            Guid.NewGuid(),
             200.00m,
             _customer
         );
@@ -100,6 +104,7 @@ public class BankAccountTests
     {
         // Arrange
         var bankAccount = new BankAccount(
+            Guid.NewGuid(),
             200.00m,
             _customer
         );
@@ -121,7 +126,7 @@ public class BankAccountTests
         decimal expectedFinalBalance)
     {
         // Arrange
-        var bankAccount = new BankAccount(initialBalance, _customer);
+        var bankAccount = new BankAccount(Guid.NewGuid(), initialBalance, _customer);
             
         // Act
         transactions.ToList().ForEach(t =>

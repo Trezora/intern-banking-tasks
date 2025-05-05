@@ -1,10 +1,11 @@
+using Banking.Domain.Primitives;
 using Banking.Domain.Services;
 using Banking.Domain.ValueObjects;
 using Banking.Shared.OperationResults;
 
 namespace Banking.Domain.Entities;
 
-public sealed class BankAccount
+public sealed class BankAccount : Entity
 {   
     public Guid AccountNumber { get; private set; }
     private Money _balance;
@@ -14,12 +15,13 @@ public sealed class BankAccount
     private readonly IAccountNotifier? _accountNotifier;
 
     public BankAccount(
+        Guid accountNumber,
         Money balance,
         Customer customer,
         ITransactionLogger? transactionLogger = null,
-        IAccountNotifier? accountNotifier = null)
+        IAccountNotifier? accountNotifier = null) : base(accountNumber)
     {   
-        AccountNumber = Guid.NewGuid();
+        AccountNumber = accountNumber;
         _balance = balance;
         Customer = customer;
         _transactionLogger = transactionLogger;
@@ -27,11 +29,12 @@ public sealed class BankAccount
     }
 
     public BankAccount(
+        Guid accountNumber,
         Customer customer,
         ITransactionLogger? transactionLogger = null,
-        IAccountNotifier? accountNotifier = null)
+        IAccountNotifier? accountNotifier = null) : base(accountNumber)
     {
-        AccountNumber = Guid.NewGuid();
+        AccountNumber = accountNumber;
         _balance = new Money(0.00m);
         Customer = customer;
         _transactionLogger = transactionLogger;

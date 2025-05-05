@@ -2,7 +2,7 @@ using Banking.Domain.Exceptions;
 
 namespace Banking.Domain.ValueObjects;
 
-public record Name
+public sealed class Name : ValueObject
 {
     public string Value { get; }
 
@@ -20,4 +20,13 @@ public record Name
     public static implicit operator Name(string name)
         => new(name);
 
+    protected override IEnumerable<object> GetAtomicValues()
+    {
+       yield return Value;
+    }
+
+    public override string ToString()
+    {
+        return $"{Value}";
+    }
 }
