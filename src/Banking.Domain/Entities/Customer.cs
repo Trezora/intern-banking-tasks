@@ -1,10 +1,12 @@
+using Banking.Domain.Events;
+using Banking.Domain.Primitives;
 using Banking.Domain.ValueObjects;
 
 namespace Banking.Domain.Entities;
 
-public sealed class Customer
+public sealed class Customer : AggregateRoot
 {
-    public Guid Id { get; private set; }
+    public CustomerId CustomerId { get; private set; }
     public Name FullName { get; private set; }
     public Email EmailAddress { get; private set; }
     public DateTime DateOfBirth { get; private set; }
@@ -12,15 +14,17 @@ public sealed class Customer
     public IReadOnlyCollection<BankAccount> Accounts => _accounts.AsReadOnly();
 
     internal Customer(
-        Guid id, 
+        CustomerId id, 
         Name fullName,
         Email email,
-        DateTime dateOfBirth)
+        DateTime dateOfBirth) : base(id)
     {
-        Id = id;
+        CustomerId = id;
         FullName = fullName;   
         EmailAddress = email;
         DateOfBirth = dateOfBirth;
+
+        RaiseDomainEvent(new CustomerRegisteredEvent(CustomerId)); 
     }
 
     public BankAccount OpenNewAccount(decimal initialDeposit = 0)
@@ -29,7 +33,7 @@ public sealed class Customer
             ? new BankAccount(Guid.NewGuid(), new Money(initialDeposit), this)
             : new BankAccount(Guid.NewGuid(), this);
 
-            _accounts.Add(newAccount);
+        _accounts.Add(newAccount);
         
         return newAccount;
     }
