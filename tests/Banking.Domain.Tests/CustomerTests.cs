@@ -1,6 +1,7 @@
 using Banking.Domain.Entities;
 using Banking.Domain.Exceptions;
 using Banking.Domain.Factories;
+using Banking.Domain.ValueObjects;
 
 namespace Banking.Domain.Tests;
 
@@ -15,8 +16,8 @@ public class CustomerTests
 
         // Act
         var newCustomer = customerFactory.CreateCustomer(
-            "Beka Buliskeria", 
-            "abcd@gmail.com", 
+            new Name("Beka Buliskeria"), 
+            new Email("abcd@gmail.com"), 
             new(2003, 8, 27)
         );
 
@@ -36,8 +37,8 @@ public class CustomerTests
         // Act & Assert
         var exception = Assert.Throws<EmptyCustomerNameException>(() =>
             customerFactory.CreateCustomer(            
-                "",
-                "abcd@gmail.com",
+                new Name(""),
+                new Email("abcd@gmail.com"),
                 new(2002, 2, 5)));
     }
 
@@ -50,8 +51,8 @@ public class CustomerTests
         // Act & Assert
         var exception = Assert.Throws<InvalidEmailFormatException>(() =>
             customerFactory.CreateCustomer(            
-                "Beka Buliskeria",
-                "abcdgmail.com",
+                new Name("Beka Buliskeria"),
+                new Email("abcdgmail.com"),
                 new(2002, 2, 5)));
     }
 
@@ -63,8 +64,8 @@ public class CustomerTests
 
         // Act
         var newCustomer_1 = customerFactory.CreateCustomer(
-            "Beka Buliskeria", 
-            "abcd@gmail.com", 
+            new Name("Beka Buliskeria"), 
+            new Email("abcd@gmail.com"), 
             new(2003, 8, 27)
         );
 
@@ -76,8 +77,8 @@ public class CustomerTests
 
         var exception = Assert.Throws<EmailAlreadyExistException>(() =>
             customerFactory.CreateCustomer(            
-                "John Snow",
-                "abcd@gmail.com",
+                new Name("John Snow"),
+                new Email("abcd@gmail.com"),
                 new(2002, 2, 5)));
     }
 
@@ -89,8 +90,8 @@ public class CustomerTests
 
         // Act
         var newCustomer = customerFactory.CreateCustomer(
-            "Beka Buliskeria", 
-            "abcd@gmail.com", 
+            new Name("Beka Buliskeria"), 
+            new Email("abcd@gmail.com"), 
             new(2003, 8, 27)
         );
 
@@ -112,14 +113,14 @@ public class CustomerTests
 
         // Act
         var newCustomer_1 = customerFactory.CreateCustomer(
-            "Beka Buliskeria", 
-            "abcd@gmail.com", 
+            new Name("Beka Buliskeria"), 
+            new Email("abcd@gmail.com"), 
             new(2003, 8, 27)
         );
 
         var newCustomer_2 = customerFactory.CreateCustomer(
-            "Beka Buliskeria", 
-            "abc@gmail.com", 
+            new Name("Beka Buliskeria"), 
+            new Email("abc@gmail.com"), 
             new(2003, 2, 27)
         );
 
@@ -139,8 +140,8 @@ public class CustomerTests
 
         // Act
         var customer = customerFactory1.CreateCustomer(
-            "Beka Buliskeria", 
-            "abcd@gmail.com", 
+            new Name("Beka Buliskeria"), 
+            new Email("abcd@gmail.com"), 
             new(2003, 8, 27)
         );
 

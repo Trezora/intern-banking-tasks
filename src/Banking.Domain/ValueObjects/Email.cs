@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Banking.Domain.Exceptions;
 using Banking.Domain.Primitives;
 
@@ -19,20 +20,13 @@ public sealed class Email : ValueObject
 
     private bool IsValidEmail(string email)
     {
-        try
-        {
-            var addr = new System.Net.Mail.MailAddress(email);
-            return addr.Address == email;
-        }
-        catch
-        {
-            return false;
-        }
+        var regex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+        return regex.IsMatch(email);
     }
 
     protected override IEnumerable<object> GetAtomicValues()
     {
-        yield return Value;
+        yield return Value.ToLowerInvariant();
     }
 
     public static implicit operator string(Email email)

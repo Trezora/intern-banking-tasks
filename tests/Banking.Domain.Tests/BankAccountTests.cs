@@ -1,6 +1,7 @@
 using Banking.Domain.Entities;
 using Banking.Domain.Exceptions;
 using Banking.Domain.Factories;
+using Banking.Domain.ValueObjects;
 
 namespace Banking.Domain.Tests;
 
@@ -12,8 +13,8 @@ public class BankAccountTests
     {   
         var customerFactory = new CustomerFactory();
         _customer = customerFactory.CreateCustomer(
-            "John Snow",
-            "abcd@gmail.com",
+            new Name("John Snow"),
+            new Email("abcd@gmail.com"),
             new(2003, 2, 4)
         );
     }
@@ -86,7 +87,7 @@ public class BankAccountTests
         // Arrange
         var bankAccount = new BankAccount(
             Guid.NewGuid(),
-            200.00m,
+            new Money(200.00m),
             _customer
         );
 
@@ -105,7 +106,7 @@ public class BankAccountTests
         // Arrange
         var bankAccount = new BankAccount(
             Guid.NewGuid(),
-            200.00m,
+            new Money(200.00m),
             _customer
         );
 
@@ -126,7 +127,7 @@ public class BankAccountTests
         decimal expectedFinalBalance)
     {
         // Arrange
-        var bankAccount = new BankAccount(Guid.NewGuid(), initialBalance, _customer);
+        var bankAccount = new BankAccount(Guid.NewGuid(), new Money(initialBalance), _customer);
             
         // Act
         transactions.ToList().ForEach(t =>

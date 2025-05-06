@@ -1,17 +1,20 @@
 using Banking.Domain.Entities;
 using Banking.Domain.Exceptions;
+using Banking.Domain.ValueObjects;
 
 namespace Banking.Domain.Factories;
 
 public class CustomerFactory
 {
-    private readonly HashSet<string> _existingEmails = new(StringComparer.OrdinalIgnoreCase);
-    public Customer CreateCustomer(string fullName, string email, DateTime dateTime)
+    private readonly HashSet<Email> _existingEmails = [];
+    public Customer CreateCustomer(Name fullName, Email email, DateTime dateTime)
     {
         if (_existingEmails.Contains(email))
             throw new EmailAlreadyExistException(email);
         
         _existingEmails.Add(email);
-        return new Customer(Guid.NewGuid(), fullName, email, dateTime);
+        Customer newCustomer = new(new CustomerId(Guid.NewGuid()), fullName, email, dateTime);
+        
+        return newCustomer;
     }
 }
