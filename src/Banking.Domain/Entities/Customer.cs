@@ -1,6 +1,7 @@
 using Banking.Domain.Events;
 using Banking.Domain.Primitives;
 using Banking.Domain.ValueObjects;
+using Banking.Shared.OperationResults;
 
 namespace Banking.Domain.Entities;
 
@@ -36,6 +37,23 @@ public sealed class Customer : AggregateRoot
         _accounts.Add(newAccount);
         
         return newAccount;
+    }
+
+    public OperationResult MakeDeposit(BankAccount bankAccount, Money amount)
+    {
+        var depositOperationResult = bankAccount.Deposit(amount);
+        
+        return depositOperationResult;
+    }
+
+    public OperationResult MakeWithdraw(BankAccount bankAccount, Money amount)
+    {
+        var withdrawOperationResult = bankAccount.Withdraw(amount);
+
+        if (!withdrawOperationResult.Result) 
+            RaiseDomainEvent(new AccountOverdrawnEvent(CustomerId)); 
+        
+        return withdrawOperationResult;
     }
 
     public IEnumerable<string> ListAccounts()
