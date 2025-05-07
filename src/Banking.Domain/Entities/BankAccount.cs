@@ -83,7 +83,7 @@ public sealed class BankAccount : Entity
         return OperationResult.Succeeded("Withdraw succeeded.");
     }
 
-    public string GetBalance() => $"  - Balance: {_balance:C}";
+    public Money GetBalance() => _balance;
 
     public string PrintAccountSummary() =>  "BankAcount summary:\n" +
                                             $"  - Customer: {CustomerId}\n" +

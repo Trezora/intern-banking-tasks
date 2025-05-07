@@ -216,3 +216,50 @@ Assessment Focus:
     Proper use of domain events
 
 Bonus: Make entities immutable where possible
+
+
+#####################################################
+
+
+Description
+
+    Goal: Represent core banking behavior cleanly in the domain layer.
+        Deliverable:
+            BankAccount entity with:
+            AccountId (Guid)
+            Balance (Money)
+            CustomerId
+    Domain behavior methods:
+        Deposit(Money)
+        Withdraw(Money)
+        GetBalance()
+
+    Throw exceptions on business rule violations (e.g., overdrafts)
+
+    Assessment Focus:
+        Encapsulated logic (no public setters!)
+        Use of value objects to reduce primitive obsession
+        Domain consistency rules (e.g., no negative balances)
+
+    Bonus: Add AccountOverdrawnEvent domain event
+
+
+#####################################################
+
+Description
+
+    Goal: Separate transport and internal models cleanly.
+        Deliverable:
+            In Banking.Application.DTOs:
+                CustomerDto, CreateCustomerRequest, CreateCustomerResponse
+            In Banking.API.Controllers:
+                Accept CreateCustomerRequest
+                Map to domain model
+                Return CreateCustomerResponse
+
+        Assessment Focus:
+            Flatten nested domain objects where appropriate
+            DTOs are never reused in the domain
+            Mapping kept in Application layer or via services (not in controllers)
+
+    Bonus: Use AutoMapper or manual mapping extension methods

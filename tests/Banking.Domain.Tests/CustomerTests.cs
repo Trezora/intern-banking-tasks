@@ -159,7 +159,7 @@ public class CustomerTests
         // Assert
         Assert.Single(oneAccountList);
         Assert.Equal(firstBankAccount.PrintAccountSummary(), oneAccountList.First());
-        Assert.Equal($"  - Balance: Money {{ Value = {0.00m} }}", firstBankAccount.GetBalance());
+        Assert.Equal(0.00m, firstBankAccount.GetBalance().Value);
 
         // Act
         var secondBankAccont = customer.OpenNewAccount(100.00m);
@@ -173,9 +173,9 @@ public class CustomerTests
         Assert.Equal(secondBankAccont.PrintAccountSummary(), severalAccountList[1]);
         Assert.Equal(thirdBankAccount.PrintAccountSummary(), severalAccountList[2]);
         Assert.Equal(fourthBankAccount.PrintAccountSummary(), severalAccountList[3]);
-        Assert.Equal($"  - Balance: Money {{ Value = {100.00m} }}", secondBankAccont.GetBalance());
-        Assert.Equal($"  - Balance: Money {{ Value = {1000.00m} }}", thirdBankAccount.GetBalance());
-        Assert.Equal($"  - Balance: Money {{ Value = {500.00m} }}", fourthBankAccount.GetBalance());
+        Assert.Equal(100.00m, secondBankAccont.GetBalance().Value);
+        Assert.Equal(1000.00m, thirdBankAccount.GetBalance().Value);
+        Assert.Equal(500.00m, fourthBankAccount.GetBalance().Value);
     }
 
 }
