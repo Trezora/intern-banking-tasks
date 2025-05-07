@@ -41,14 +41,14 @@ public sealed class BankAccount : Entity
         _accountNotifier = accountNotifier;
     }
 
-    public OperationResult Deposit(Money amount)
+    internal OperationResult Deposit(Money amount)
     {   
         if (amount.Value == 0)
         {
             var errorMessage = "Deposit failed: Deposit money amount cannot be zero.";
             _transactionLogger?.LogFailedTransaction(AccountNumber, errorMessage);
 
-            return OperationResult.Failed("Withdraw failed: Deposit money amount cannot be zero.");
+            return OperationResult.Failed("Deposit failed: Deposit money amount cannot be zero.");
         }
              
         _balance = _balance.Add(amount);
@@ -58,7 +58,7 @@ public sealed class BankAccount : Entity
         return OperationResult.Succeeded("Deposit succeeded.");
     }
 
-    public OperationResult Withdraw(Money amount)
+    internal OperationResult Withdraw(Money amount)
     {
         if (amount.Value == 0)
         {   
@@ -89,4 +89,5 @@ public sealed class BankAccount : Entity
                                             $"  - Customer: {CustomerId}\n" +
                                             $"  - AccountNumber: {AccountNumber}\n" +
                                             $"  - Balance: {_balance:C}";
+
 }

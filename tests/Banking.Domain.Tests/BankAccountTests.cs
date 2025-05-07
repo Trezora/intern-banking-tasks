@@ -42,7 +42,7 @@ public class BankAccountTests
     {
         // Arrange & Act & Assert
         var exception = Assert.Throws<NegativeMoneyAmountException>(() =>
-            new BankAccount(Guid.NewGuid(), -100.00m, _customer.CustomerId));
+            new BankAccount(Guid.NewGuid(), new Money(-100.00m), _customer.CustomerId));
     }
 
     [Fact]
@@ -55,7 +55,7 @@ public class BankAccountTests
         );
 
         // Act
-        var operationResult = bankAccount.Deposit(100.00m);
+        var operationResult = _customer.MakeDeposit(bankAccount, new Money(100.00m));
 
         // Assert
         Assert.True(operationResult.Result);
@@ -73,11 +73,11 @@ public class BankAccountTests
         );
 
         // Act
-        var operationResult = bankAccount.Deposit(0.00m);
+        var operationResult = _customer.MakeDeposit(bankAccount, new Money(0.00m));
 
         // Assert
         Assert.False(operationResult.Result);
-        Assert.Equal("Withdraw failed: Deposit money amount cannot be zero.", operationResult.Message);
+        Assert.Equal("Deposit failed: Deposit money amount cannot be zero.", operationResult.Message);
         Assert.Equal($"  - Balance: Money {{ Value = {0.00m} }}", bankAccount.GetBalance());
     }
 
@@ -92,7 +92,7 @@ public class BankAccountTests
         );
 
         // Act
-        var operationResult = bankAccount.Withdraw(125.00m);
+        var operationResult = _customer.MakeWithdraw(bankAccount, new Money(125.00m));
 
         // Assert
         Assert.True(operationResult.Result);
@@ -101,7 +101,7 @@ public class BankAccountTests
     }
 
     [Fact]
-    public void Should_make_valid_withdraw_and_return_OperationResult_failure()
+    public void Should_make_invalid_withdraw_and_return_OperationResult_failure()
     {
         // Arrange
         var bankAccount = new BankAccount(
@@ -111,7 +111,7 @@ public class BankAccountTests
         );
 
         // Act
-        var operationResult = bankAccount.Withdraw(225.00m);
+        var operationResult = _customer.MakeWithdraw(bankAccount, new Money(225.00m));
 
         // Assert
         Assert.False(operationResult.Result);
@@ -133,9 +133,9 @@ public class BankAccountTests
         transactions.ToList().ForEach(t =>
         {   
             if (t.type == "deposit")
-                bankAccount.Deposit(t.amount);
+                _customer.MakeDeposit(bankAccount, new Money(t.amount));
             else if (t.type == "withdraw")
-                bankAccount.Withdraw(t.amount);
+                _customer.MakeWithdraw(bankAccount, new Money(t.amount));
         });
 
         // Assert
