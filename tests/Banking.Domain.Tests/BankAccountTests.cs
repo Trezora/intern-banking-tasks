@@ -25,7 +25,7 @@ public class BankAccountTests
         // Arrange
         var bankAccount = new BankAccount(
             Guid.NewGuid(),
-            _customer
+            _customer.CustomerId
         );
 
         // Act
@@ -33,7 +33,7 @@ public class BankAccountTests
 
         // Assert
         Assert.NotNull(bankAccount);
-        Assert.Contains(_customer.FullName, summary);
+        Assert.Contains(_customer.CustomerId.ToString(), summary);
         Assert.Contains(bankAccount.GetBalance(), summary);
     }
 
@@ -42,7 +42,7 @@ public class BankAccountTests
     {
         // Arrange & Act & Assert
         var exception = Assert.Throws<NegativeMoneyAmountException>(() =>
-            new BankAccount(Guid.NewGuid(), -100.00m, _customer));
+            new BankAccount(Guid.NewGuid(), -100.00m, _customer.CustomerId));
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class BankAccountTests
         // Arrange
         var bankAccount = new BankAccount(
             Guid.NewGuid(),
-            _customer
+            _customer.CustomerId
         );
 
         // Act
@@ -69,7 +69,7 @@ public class BankAccountTests
         // Arrange
         var bankAccount = new BankAccount(
             Guid.NewGuid(),
-            _customer
+            _customer.CustomerId
         );
 
         // Act
@@ -88,7 +88,7 @@ public class BankAccountTests
         var bankAccount = new BankAccount(
             Guid.NewGuid(),
             new Money(200.00m),
-            _customer
+            _customer.CustomerId
         );
 
         // Act
@@ -107,7 +107,7 @@ public class BankAccountTests
         var bankAccount = new BankAccount(
             Guid.NewGuid(),
             new Money(200.00m),
-            _customer
+            _customer.CustomerId
         );
 
         // Act
@@ -127,7 +127,7 @@ public class BankAccountTests
         decimal expectedFinalBalance)
     {
         // Arrange
-        var bankAccount = new BankAccount(Guid.NewGuid(), new Money(initialBalance), _customer);
+        var bankAccount = new BankAccount(Guid.NewGuid(), new Money(initialBalance), _customer.CustomerId);
             
         // Act
         transactions.ToList().ForEach(t =>

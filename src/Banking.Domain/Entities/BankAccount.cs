@@ -9,7 +9,7 @@ public sealed class BankAccount : Entity
 {   
     public Guid AccountNumber { get; private set; }
     private Money _balance;
-    public Customer Customer { get; private set; }
+    public CustomerId CustomerId { get; private set; }
 
     private readonly ITransactionLogger? _transactionLogger;
     private readonly IAccountNotifier? _accountNotifier;
@@ -17,33 +17,33 @@ public sealed class BankAccount : Entity
     public BankAccount(
         Guid accountNumber,
         Money balance,
-        Customer customer,
+        CustomerId customerId,
         ITransactionLogger? transactionLogger = null,
         IAccountNotifier? accountNotifier = null) : base(accountNumber)
     {   
         AccountNumber = accountNumber;
         _balance = balance;
-        Customer = customer;
+        CustomerId = customerId;
         _transactionLogger = transactionLogger;
         _accountNotifier = accountNotifier;
     }
 
     public BankAccount(
         Guid accountNumber,
-        Customer customer,
+        CustomerId customerId,
         ITransactionLogger? transactionLogger = null,
         IAccountNotifier? accountNotifier = null) : base(accountNumber)
     {
         AccountNumber = accountNumber;
         _balance = new Money(0.00m);
-        Customer = customer;
+        CustomerId = customerId;
         _transactionLogger = transactionLogger;
         _accountNotifier = accountNotifier;
     }
 
-    public OperationResult Deposit(decimal amount)
+    public OperationResult Deposit(Money amount)
     {   
-        if (amount == 0)
+        if (amount.Value == 0)
         {
             var errorMessage = "Deposit failed: Deposit money amount cannot be zero.";
             _transactionLogger?.LogFailedTransaction(AccountNumber, errorMessage);
@@ -51,16 +51,16 @@ public sealed class BankAccount : Entity
             return OperationResult.Failed("Withdraw failed: Deposit money amount cannot be zero.");
         }
              
-        _balance = _balance.Add(new Money(amount));
+        _balance = _balance.Add(amount);
         _transactionLogger?.LogDeposit(AccountNumber, amount, _balance);
-        _accountNotifier?.NotifySuccessfulDeposit(AccountNumber, Customer.FullName, Customer.EmailAddress, amount);
+        _accountNotifier?.NotifySuccessfulDeposit(AccountNumber, CustomerId, amount);
 
         return OperationResult.Succeeded("Deposit succeeded.");
     }
 
-    public OperationResult Withdraw(decimal amount)
+    public OperationResult Withdraw(Money amount)
     {
-        if (amount == 0)
+        if (amount.Value == 0)
         {   
             var errorMessage = "Withdraw failed: Withdraw money amount cannot be zero.";
            _transactionLogger?.LogFailedTransaction(AccountNumber, errorMessage);
@@ -68,7 +68,7 @@ public sealed class BankAccount : Entity
             return OperationResult.Failed("Withdraw failed: Withdraw Money amount cannot be zero.");
         }
 
-        if (amount > _balance.Value)
+        if (amount.Value > _balance.Value)
         {   
             var errorMessage = "Withdraw failed: Insufficient funds.";
             _transactionLogger?.LogFailedTransaction(AccountNumber, errorMessage);
@@ -76,9 +76,9 @@ public sealed class BankAccount : Entity
             return OperationResult.Failed("Withdraw failed: Insuficient funds.");
         }
             
-        _balance = _balance.Subtract(new Money(amount));
+        _balance = _balance.Subtract(amount);
         _transactionLogger?.LogWithdrawal(AccountNumber, amount, _balance);
-        _accountNotifier?.NotifySuccessfulWithdrawal(AccountNumber, Customer.FullName, Customer.EmailAddress, amount);
+        _accountNotifier?.NotifySuccessfulWithdrawal(AccountNumber, CustomerId, amount);
 
         return OperationResult.Succeeded("Withdraw succeeded.");
     }
@@ -86,7 +86,7 @@ public sealed class BankAccount : Entity
     public string GetBalance() => $"  - Balance: {_balance:C}";
 
     public string PrintAccountSummary() =>  "BankAcount summary:\n" +
-                                            $"  - Customer: {Customer.FullName}\n" +
+                                            $"  - Customer: {CustomerId}\n" +
                                             $"  - AccountNumber: {AccountNumber}\n" +
                                             $"  - Balance: {_balance:C}";
 }
