@@ -27,11 +27,11 @@ public sealed class Customer : AggregateRoot
         RaiseDomainEvent(new CustomerRegisteredEvent(CustomerId)); 
     }
 
-    public BankAccount OpenNewAccount(decimal initialDeposit = 0)
+    public BankAccount OpenNewAccount(Money initialDeposit)
     {
-        BankAccount newAccount = initialDeposit > 0
-            ? new BankAccount(Guid.NewGuid(), new Money(initialDeposit), this)
-            : new BankAccount(Guid.NewGuid(), this);
+        BankAccount newAccount = initialDeposit.Value > 0
+            ? new BankAccount(Guid.NewGuid(), initialDeposit, CustomerId)
+            : new BankAccount(Guid.NewGuid(), CustomerId);
 
         _accounts.Add(newAccount);
         

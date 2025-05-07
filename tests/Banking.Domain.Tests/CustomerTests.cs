@@ -153,7 +153,7 @@ public class CustomerTests
         Assert.Equal("Customer has no bank accounts.", noAccountList.First());
 
         // Act
-        var firstBankAccount = customer.OpenNewAccount();
+        var firstBankAccount = customer.OpenNewAccount(new Money(0.00m));
         var oneAccountList = customer.ListAccounts().ToList();
 
         // Assert

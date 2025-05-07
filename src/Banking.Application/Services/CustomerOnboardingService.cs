@@ -1,5 +1,6 @@
 using Banking.Domain.Entities;
 using Banking.Domain.Services;
+using Banking.Domain.ValueObjects;
 using Banking.Shared.OperationResults;
 
 namespace Banking.Application.Services;
@@ -8,19 +9,19 @@ public class CustomerOnboardingService : ICustomerOnBoardingService
 {   
     private readonly ICustomerValidator _customerValidator;
     private readonly IOnboardingLogger _logger;
-    private readonly decimal _defaultInitialBalance;
+    private readonly Money _defaultInitialBalance;
 
     public CustomerOnboardingService(
         ICustomerValidator customerValidator,
         IOnboardingLogger logger,
-        decimal defaultInitialBalance
+        Money defaultInitialBalance
     )
     {
         _customerValidator = customerValidator;
         _logger = logger;
         _defaultInitialBalance = defaultInitialBalance;
     }
-    public OperationResult OnboardCustomer(Customer customer, decimal initialBalance = 0)
+    public OperationResult OnboardCustomer(Customer customer, Money initialBalance)
     {
         var validationResult = _customerValidator.ValidateCustomerForOnboarding(customer);
         if (!validationResult.Result)
@@ -29,7 +30,7 @@ public class CustomerOnboardingService : ICustomerOnBoardingService
             return validationResult;
         }
 
-        var effectiveInitialBalance = initialBalance > 0 ? initialBalance : _defaultInitialBalance;
+        var effectiveInitialBalance = initialBalance.Value > 0 ? initialBalance.Value : _defaultInitialBalance.Value;
         var account = customer.OpenNewAccount(effectiveInitialBalance);
 
         _logger.LogOnboardingSuccess(customer, account.AccountNumber, effectiveInitialBalance);

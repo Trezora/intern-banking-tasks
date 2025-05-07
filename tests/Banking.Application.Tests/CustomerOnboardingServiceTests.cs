@@ -5,6 +5,7 @@ using Banking.Domain.Factories;
 using Banking.Domain.Services;
 using Moq;
 using Banking.Shared.OperationResults;
+using Banking.Domain.ValueObjects;
 
 namespace Application.Tests;
 
@@ -44,7 +45,7 @@ public class CustomerOnboardingTests
         var onboardedCustomerService = new CustomerOnboardingService(
             _mockValidator.Object,
             _mockLogger.Object,
-            _defaultInitialBalance
+            new Money(_defaultInitialBalance)
         );
 
         _mockValidator
@@ -52,7 +53,7 @@ public class CustomerOnboardingTests
             .Returns(OperationResult.Succeeded("Customer is eligible for onboarding."));
 
         // Act
-        var result = onboardedCustomerService.OnboardCustomer(_validCustomerWithValidAge);
+        var result = onboardedCustomerService.OnboardCustomer(_validCustomerWithValidAge, new Money(0));
 
         // Assert
         Assert.True(result.Result);
@@ -61,7 +62,7 @@ public class CustomerOnboardingTests
             l => l.LogOnboardingSuccess(
                 _validCustomerWithValidAge, 
                 It.IsAny<Guid>(), 
-                _defaultInitialBalance
+                new Money(_defaultInitialBalance)
             ),
             Times.Once
         );
@@ -84,7 +85,7 @@ public class CustomerOnboardingTests
         var onboardingService = new CustomerOnboardingService(
             _mockValidator.Object,
             _mockLogger.Object,
-            _defaultInitialBalance
+            new Money(_defaultInitialBalance)
         );
 
         _mockValidator
@@ -92,7 +93,7 @@ public class CustomerOnboardingTests
             .Returns(OperationResult.Failed(failureMessage));
 
         // Act
-        var result = onboardingService.OnboardCustomer(_validCustomerWithInvalidAge);
+        var result = onboardingService.OnboardCustomer(_validCustomerWithInvalidAge, new Money(0.00m));
 
         // Assert
         Assert.False(result.Result);
@@ -110,7 +111,7 @@ public class CustomerOnboardingTests
             l => l.LogOnboardingSuccess(
                 It.IsAny<Customer>(), 
                 It.IsAny<Guid>(), 
-                It.IsAny<decimal>()
+                It.IsAny<Money>()
             ),
             Times.Never
         );
