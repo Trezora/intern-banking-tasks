@@ -34,7 +34,7 @@ public class BankAccountTests
         // Assert
         Assert.NotNull(bankAccount);
         Assert.Contains(_customer.CustomerId.ToString(), summary);
-        Assert.Contains(bankAccount.GetBalance(), summary);
+        Assert.Contains(bankAccount.GetBalance().ToString(), summary);
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public class BankAccountTests
         // Assert
         Assert.True(operationResult.Result);
         Assert.Equal("Deposit succeeded.", operationResult.Message);
-        Assert.Equal($"  - Balance: Money {{ Value = {100.00m} }}", bankAccount.GetBalance());
+        Assert.Equal(100.00m, bankAccount.GetBalance().Value);
     }
 
     [Fact]
@@ -78,7 +78,7 @@ public class BankAccountTests
         // Assert
         Assert.False(operationResult.Result);
         Assert.Equal("Deposit failed: Deposit money amount cannot be zero.", operationResult.Message);
-        Assert.Equal($"  - Balance: Money {{ Value = {0.00m} }}", bankAccount.GetBalance());
+        Assert.Equal(0.00m, bankAccount.GetBalance().Value);
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public class BankAccountTests
         // Assert
         Assert.True(operationResult.Result);
         Assert.Equal("Withdraw succeeded.", operationResult.Message);
-        Assert.Equal($"  - Balance: Money {{ Value = {75.00m} }}", bankAccount.GetBalance());
+        Assert.Equal(75.00m, bankAccount.GetBalance().Value);
     }
 
     [Fact]
@@ -116,7 +116,7 @@ public class BankAccountTests
         // Assert
         Assert.False(operationResult.Result);
         Assert.Equal("Withdraw failed: Insuficient funds.", operationResult.Message);
-        Assert.Equal($"  - Balance: Money {{ Value = {200.00m} }}", bankAccount.GetBalance());
+        Assert.Equal(200.00m, bankAccount.GetBalance().Value);
     }
 
     [Theory]
@@ -139,7 +139,7 @@ public class BankAccountTests
         });
 
         // Assert
-        Assert.Equal($"  - Balance: Money {{ Value = {expectedFinalBalance} }}", bankAccount.GetBalance());
+        Assert.Equal(expectedFinalBalance, bankAccount.GetBalance().Value);
     }
 
     /*

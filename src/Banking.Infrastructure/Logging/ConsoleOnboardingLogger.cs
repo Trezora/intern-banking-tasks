@@ -1,11 +1,12 @@
 using Banking.Domain.Entities;
 using Banking.Domain.Services;
+using Banking.Domain.ValueObjects;
 
 namespace Banking.Infrastructure.Logging;
 
 public class ConsoleOnboardingLogger : IOnboardingLogger
 {
-    public void LogOnboardingSuccess(Customer customer, Guid accountNumber, decimal initialBalance)
+    public void LogOnboardingSuccess(Customer customer, Guid accountNumber, Money initialBalance)
     {
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] ONBOARDING SUCCESS: " +
