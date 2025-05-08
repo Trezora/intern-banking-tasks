@@ -22,25 +22,21 @@ public class CustomerService : ICustomerService
     public async Task<ApiResponse> CreateCustomerAsync(CreateCustomerRequest request)
     {   
         try {
-            // This will create new Customer and validation will happen in Domain
             var customer = request.ToCustomerEntity();
 
-            // This will add new Cusomer in inMemory repository
             await _customerRepository.AddAsync(customer);   
 
-            // This will publish CustomerRegisteredEvent
             foreach (var domainEvent in customer.DomainEvents)
             {
                 await _mediator.Publish(domainEvent);
             }
 
-            // This will remove events
             customer.ClearDomainEvents();
 
-            // This will return CustomerResponse Dto
             var response = customer.ToResponse();
 
             return new ApiResponse(true, "Customer created successfully", response);
+            
         } catch (EmailAlreadyExistException)
         {
             return new ApiResponse(false, "Customer with this email already exists", null);
