@@ -1,5 +1,7 @@
+using MediatR;
+
 namespace Banking.Domain.Primitives;
 
-public interface IDomainEvent
+public interface IDomainEvent : INotification
 {
 }

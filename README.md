@@ -263,3 +263,25 @@ Description
             Mapping kept in Application layer or via services (not in controllers)
 
     Bonus: Use AutoMapper or manual mapping extension methods
+
+
+#####################################################
+
+
+Goal: Abstract infrastructure behind clean repository contracts.
+
+    Deliverable:
+        In Banking.Domain.Repositories:
+            ICustomerRepository:
+                Task<Customer?> GetByIdAsync(Guid id);
+                Task AddAsync(Customer customer);
+
+        In Banking.Infrastructure.Persistence:
+            In-memory or stub implementation
+
+    Assessment Focus:
+        Interface-only in Domain layer
+        No implementation logic leaking into Application
+        Async signatures
+
+    Bonus: Add IBankAccountRepository
