@@ -6,11 +6,14 @@ using Banking.Domain.Factories;
 using Banking.Domain.ValueObjects;
 using System;
 using System.Linq;
+using System.Runtime.Intrinsics.X86;
 
 namespace Banking.Application.Mappings;
 
 public static class CustomerMapper
 {   
+    private static readonly CustomerFactory _customerFactory = new();
+
     // We want to map a Customer enitity to a CustomerResponse
     public static CustomerResponse ToResponse(this Customer customer)
     {
@@ -26,13 +29,30 @@ public static class CustomerMapper
     // We want to map a CreateCustomerRequest to a Customer entity
     public static Customer ToCustomerEntity(this CreateCustomerRequest request)
     {
-        var customerFactory = new CustomerFactory();
-        var customer = customerFactory.CreateCustomer(
-            request.FullName, 
-            request.Email,
+        //var customerFactory = new CustomerFactory();
+        var customer = _customerFactory.CreateCustomer(
+            new Name(request.FullName), 
+            new Email(request.Email),
             request.DateOfBirth
         );
 
         return customer;
+    }
+
+    // We want to map a customer entity to a customerDto 
+    public static CustomerDto ToDto(this Customer customer)
+    {
+        return new CustomerDto
+        {
+            Id = customer.Id,
+            FullName = customer.FullName,
+            EmailAddress = customer.EmailAddress,
+            DateOfBirth = customer.DateOfBirth,
+            Accounts = customer.Accounts.Select(a => new BankAccountDto
+            {
+                AccountNumber = a.AccountNumber,
+                Balance = a.GetBalance(),
+            }).ToList()
+        };
     }
 }
