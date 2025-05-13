@@ -7,6 +7,8 @@ public interface ICustomerService
 {
     Task<ApiResponse> CreateCustomerAsync(CreateCustomerRequest request);
 
+    Task<ApiResponse> OpenNewBankAccountAsync(CreateBankAccountRequest request);
+
     Task<ApiResponse> GetCustomerByIdAsync(Guid id);
 
     Task<ApiResponse> GetAllCustomerAsync();
