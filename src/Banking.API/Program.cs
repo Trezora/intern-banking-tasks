@@ -16,6 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IBankAccountService, BankAccountService>();
 
 builder.Services.AddSingleton<ICustomerRespository, InMemoryCustomerRepository>();
 builder.Services.AddSingleton<IBankAccountRepository, InMemoryBankAccountRepository>();

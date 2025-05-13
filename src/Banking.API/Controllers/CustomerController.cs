@@ -16,7 +16,7 @@ public class CustomerController : ControllerBase
         _customerService = customerService;
     }
 
-    [HttpPost]
+    [HttpPost("create")]
     [ProducesResponseType(typeof (ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof (ApiResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerRequest request)
@@ -31,8 +31,29 @@ public class CustomerController : ControllerBase
         if (result.Success)
         {
             
-            var customerResponse = (CustomerResponse)result.Data!;
+            var customerResponse = (CustomerCreateResponse)result.Data!;
             return CreatedAtAction(nameof(GetCustomerById), new { id = customerResponse.CustomerId }, result);
+        }
+
+        return BadRequest(result);
+    }
+
+    [HttpPost("open account")]
+    [ProducesResponseType(typeof (ApiResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof (ApiResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> OpenNewAccount([FromBody] CreateBankAccountRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new ApiResponse(false, "Invalid request data", ModelState));
+        }      
+
+        var result  = await _customerService.OpenNewBankAccountAsync(request);
+
+        if (result.Success)
+        {
+            var bankAccountResponse = (BankAccountCreateResponse)result.Data!;
+            return CreatedAtRoute("GetBankAccountById", new {id  = bankAccountResponse.AccountNumber}, result);
         }
 
         return BadRequest(result);

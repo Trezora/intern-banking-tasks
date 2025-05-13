@@ -55,7 +55,7 @@ public class BankAccountTests
         );
 
         // Act
-        var operationResult = Customer.MakeDeposit(bankAccount, new Money(100.00m));
+        var operationResult = _customer.MakeDeposit(bankAccount, new Money(100.00m));
 
         // Assert
         Assert.True(operationResult.Result);
@@ -73,7 +73,7 @@ public class BankAccountTests
         );
 
         // Act
-        var operationResult = Customer.MakeDeposit(bankAccount, new Money(0.00m));
+        var operationResult = _customer.MakeDeposit(bankAccount, new Money(0.00m));
 
         // Assert
         Assert.False(operationResult.Result);
@@ -133,7 +133,7 @@ public class BankAccountTests
         transactions.ToList().ForEach(t =>
         {   
             if (t.type == "deposit")
-                Customer.MakeDeposit(bankAccount, new Money(t.amount));
+                _customer.MakeDeposit(bankAccount, new Money(t.amount));
             else if (t.type == "withdraw")
                 _customer.MakeWithdraw(bankAccount, new Money(t.amount));
         });

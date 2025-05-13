@@ -11,11 +11,15 @@ namespace Banking.Application.Services;
 public class CustomerService : ICustomerService
 {   
     private readonly ICustomerRespository _customerRepository;
+    private readonly IBankAccountRepository _bankAccountRepository;
     private readonly IMediator _mediator;
 
-    public CustomerService(ICustomerRespository customerRespository, IMediator mediator)
+    public CustomerService(ICustomerRespository customerRespository, 
+                           IBankAccountRepository bankAccountRepository, 
+                           IMediator mediator)
     {
         _customerRepository = customerRespository;
+        _bankAccountRepository = bankAccountRepository;
         _mediator = mediator;
     }
 
@@ -37,11 +41,42 @@ public class CustomerService : ICustomerService
 
             return new ApiResponse(true, "Customer created successfully", response);
             
-        } catch (EmailAlreadyExistException)
+        } 
+        catch (Exception ex) when (
+            ex is EmailAlreadyExistException ||
+            ex is EmptyCustomerEmailException ||
+            ex is InvalidEmailFormatException ||
+            ex is EmptyCustomerNameException)
         {
-            return new ApiResponse(false, "Customer with this email already exists", null);
+            return new ApiResponse(false, ex.Message, null);
         }
     }
+
+    public async Task<ApiResponse> OpenNewBankAccountAsync(CreateBankAccountRequest request)
+    {
+        try
+        {
+            var bankAccount = request.ToBankAccountEntity();
+            var customerId = bankAccount.CustomerId;
+            var customer = await _customerRepository.GetByIdAsync(customerId);
+
+            if (customer == null)
+            {
+                return new ApiResponse(false, $"Customer with ID {customerId} not found.", null);
+            }  
+
+            customer.OpenNewAccount(bankAccount.GetBalance());
+            await _bankAccountRepository.AddAsync(bankAccount);
+
+            var response = bankAccount.ToResponse();
+            return new ApiResponse(true, "Bank Account created successfully", response);
+        }
+        catch
+        {
+            return new ApiResponse(false, "An error occurred while creating the bank account.", null);
+        }
+    }
+
 
     public async Task<ApiResponse> GetCustomerByIdAsync(Guid id)
     {

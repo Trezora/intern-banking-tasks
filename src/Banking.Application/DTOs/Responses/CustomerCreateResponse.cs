@@ -1,6 +1,6 @@
 namespace Banking.Application.DTOs.Responses;
 
-public sealed record CustomerResponse
+public sealed record CustomerCreateResponse
 {
     public Guid CustomerId { get; set; }
     public string FullName { get; set; } = string.Empty;
