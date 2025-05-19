@@ -15,12 +15,12 @@ public class BankAccountController : ControllerBase
         _bankAccountService = bankAccountService;
     }
 
-    [HttpGet("{id}", Name = "GetBankAccountById")]
+    [HttpGet("{accountNumber}", Name = "GetBankAccountByAccountNumber")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetBankAccountByAccountNumber(Guid id)
+    public async Task<IActionResult> GetBankAccountByAccountNumber(Guid accountNumber)
     {
-        var response = await _bankAccountService.GetBankAccountsByCustomerIdAsync(id);
+        var response = await _bankAccountService.GetBankAccountByAccountNumberAsync(accountNumber);
 
         if (!response.Success)
         {

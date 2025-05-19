@@ -9,10 +9,21 @@ public sealed class BankAccount : Entity
 {   
     public Guid AccountNumber { get; private set; }
     private Money _balance;
+    
+    // public property for EF Core to map
+    public decimal Balance 
+    { 
+        get => _balance.Value;
+        private set => _balance = new Money(value);
+    }
+    
     public CustomerId CustomerId { get; private set; }
 
     private readonly ITransactionLogger? _transactionLogger;
     private readonly IAccountNotifier? _accountNotifier;
+    
+    #pragma warning disable CS8618
+    private BankAccount() : base() { } // This is required by EF Core
 
     public BankAccount(
         Guid accountNumber,
@@ -20,7 +31,7 @@ public sealed class BankAccount : Entity
         CustomerId customerId,
         ITransactionLogger? transactionLogger = null,
         IAccountNotifier? accountNotifier = null) : base(accountNumber)
-    {   
+    {
         AccountNumber = accountNumber;
         _balance = balance;
         CustomerId = customerId;

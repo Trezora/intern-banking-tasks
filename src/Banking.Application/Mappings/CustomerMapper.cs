@@ -44,7 +44,7 @@ public static class CustomerMapper
     {
         return new CustomerDto
         {
-            Id = customer.Id,
+            Id = customer.CustomerId,
             FullName = customer.FullName,
             EmailAddress = customer.EmailAddress,
             DateOfBirth = customer.DateOfBirth,
