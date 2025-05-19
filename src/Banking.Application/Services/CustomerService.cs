@@ -4,6 +4,7 @@ using Banking.Application.Mappings;
 using Banking.Domain.Entities;
 using Banking.Domain.Exceptions;
 using Banking.Domain.Repositories;
+using Banking.Domain.ValueObjects;
 using MediatR;
 
 namespace Banking.Application.Services;
@@ -58,29 +59,29 @@ public class CustomerService : ICustomerService
         {
             var bankAccount = request.ToBankAccountEntity();
             var customerId = bankAccount.CustomerId;
-            var customer = await _customerRepository.GetByIdAsync(customerId);
+            var customer = await _customerRepository.GetByCustomerIdAsync(customerId);
 
             if (customer == null)
             {
                 return new ApiResponse(false, $"Customer with ID {customerId} not found.", null);
             }  
 
-            customer.OpenNewAccount(bankAccount.GetBalance());
             await _bankAccountRepository.AddAsync(bankAccount);
+            customer.OpenNewAccount(bankAccount.GetBalance());
 
             var response = bankAccount.ToResponse();
             return new ApiResponse(true, "Bank Account created successfully", response);
         }
-        catch
+        catch (Exception ex)
         {
-            return new ApiResponse(false, "An error occurred while creating the bank account.", null);
+            return new ApiResponse(false, $"An error occurred: {ex.Message}", null);
         }
     }
 
 
     public async Task<ApiResponse> GetCustomerByIdAsync(Guid id)
     {
-        var customer = await _customerRepository.GetByIdAsync(id);
+        var customer = await _customerRepository.GetByCustomerIdAsync(id);
 
         if (customer == null)
         {

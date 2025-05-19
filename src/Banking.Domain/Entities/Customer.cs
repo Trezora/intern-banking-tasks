@@ -13,19 +13,22 @@ public sealed class Customer : AggregateRoot
     public DateTime DateOfBirth { get; private set; }
     private readonly List<BankAccount> _accounts = [];
     public IReadOnlyCollection<BankAccount> Accounts => _accounts.AsReadOnly();
+    
+    #pragma warning disable CS8618
+    private Customer() : base() { } // This is required by EF Core
 
     internal Customer(
-        CustomerId id, 
+        CustomerId id,
         Name fullName,
         Email email,
         DateTime dateOfBirth) : base(id)
     {
         CustomerId = id;
-        FullName = fullName;   
+        FullName = fullName;
         EmailAddress = email;
         DateOfBirth = dateOfBirth;
 
-        RaiseDomainEvent(new CustomerRegisteredEvent(CustomerId)); 
+        RaiseDomainEvent(new CustomerRegisteredEvent(CustomerId));
     }
 
     public BankAccount OpenNewAccount(Money initialDeposit)
@@ -35,7 +38,7 @@ public sealed class Customer : AggregateRoot
             : new BankAccount(Guid.NewGuid(), CustomerId);
 
         _accounts.Add(newAccount);
-        
+
         return newAccount;
     }
 

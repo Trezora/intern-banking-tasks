@@ -22,7 +22,7 @@ public class BankAccountService : IBankAccountService
     }
     public async Task<ApiResponse> GetBankAccountByAccountNumberAsync(Guid id)
     {
-        var bankAccount = await _bankAccountRepository.GetByIdAsync(id);
+        var bankAccount = await _bankAccountRepository.GetByAccountNumberAsync(id);
 
         if (bankAccount == null)
         {
@@ -36,7 +36,7 @@ public class BankAccountService : IBankAccountService
 
     public async Task<ApiResponse> GetBankAccountsByCustomerIdAsync(Guid id)
     {
-        var customer = await _customerRepository.GetByIdAsync(id);
+        var customer = await _customerRepository.GetByCustomerIdAsync(id);
 
         if (customer == null)
         {

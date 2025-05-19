@@ -2,6 +2,7 @@ using Banking.Application.DTOs;
 using Banking.Application.DTOs.Requests;
 using Banking.Application.DTOs.Responses;
 using Banking.Domain.Entities;
+using Banking.Domain.ValueObjects;
 
 namespace Banking.Application.Mappings;
 
@@ -13,7 +14,7 @@ public static class BankAccountMapper
         {
             AccountNumber = bankAccount.AccountNumber,
             Balance = bankAccount.GetBalance().Value,
-            CustomerId = bankAccount.CustomerId
+            CustomerId = bankAccount.CustomerId.Value
         };
     }
 
@@ -21,8 +22,8 @@ public static class BankAccountMapper
     {
         return new BankAccount(
             Guid.NewGuid(), 
-            request.Balance, 
-            request.CustomerId
+            new Money (request.Balance), 
+            new CustomerId (request.CustomerId)
         );
     }
 

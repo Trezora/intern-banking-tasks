@@ -4,6 +4,11 @@ public abstract class Entity : IEquatable<Entity>
 {   
     public Guid Id { get; private init; }
 
+    protected Entity()
+    {
+        Id = Guid.NewGuid();
+    }
+
     protected Entity(Guid id)
     {
         Id = id;

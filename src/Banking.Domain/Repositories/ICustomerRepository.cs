@@ -1,10 +1,11 @@
 using Banking.Domain.Entities;
+using Banking.Domain.ValueObjects;
 
 namespace Banking.Domain.Repositories;
 
 public interface ICustomerRespository
 {
-    Task<Customer?> GetByIdAsync(Guid id);
+    Task<Customer?> GetByCustomerIdAsync(Guid customerId);
     Task<List<Customer>> GetAllCustomerAsync();
     Task AddAsync(Customer customer);
 }

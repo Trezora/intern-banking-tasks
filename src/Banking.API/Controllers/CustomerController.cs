@@ -38,7 +38,7 @@ public class CustomerController : ControllerBase
         return BadRequest(result);
     }
 
-    [HttpPost("open account")]
+    [HttpPost("open_account")]
     [ProducesResponseType(typeof (ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof (ApiResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> OpenNewAccount([FromBody] CreateBankAccountRequest request)
