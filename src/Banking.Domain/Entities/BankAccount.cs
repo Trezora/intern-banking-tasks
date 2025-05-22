@@ -52,31 +52,31 @@ public sealed class BankAccount : Entity
         _accountNotifier = accountNotifier;
     }
 
-    internal OperationResult Deposit(Money amount)
+    internal Result<BankAccount> Deposit(Money amount)
     {   
         if (amount.Value == 0)
         {
             var errorMessage = "Deposit failed: Deposit money amount cannot be zero.";
             _transactionLogger?.LogFailedTransaction(AccountNumber, errorMessage);
 
-            return OperationResult.Failed("Deposit failed: Deposit money amount cannot be zero.");
+            return Result<BankAccount>.FailureWith("Deposit failed: Deposit money amount cannot be zero.");
         }
              
         _balance = _balance.Add(amount);
         _transactionLogger?.LogDeposit(AccountNumber, amount, _balance);
         _accountNotifier?.NotifySuccessfulDeposit(AccountNumber, CustomerId, amount);
 
-        return OperationResult.Succeeded("Deposit succeeded.");
+        return Result<BankAccount>.Success(this);
     }
 
-    internal OperationResult Withdraw(Money amount)
+    internal Result<BankAccount> Withdraw(Money amount)
     {
         if (amount.Value == 0)
         {   
             var errorMessage = "Withdraw failed: Withdraw money amount cannot be zero.";
            _transactionLogger?.LogFailedTransaction(AccountNumber, errorMessage);
 
-            return OperationResult.Failed("Withdraw failed: Withdraw Money amount cannot be zero.");
+            return Result<BankAccount>.FailureWith("Withdraw failed: Withdraw Money amount cannot be zero.");
         }
 
         if (amount.Value > _balance.Value)
@@ -84,14 +84,14 @@ public sealed class BankAccount : Entity
             var errorMessage = "Withdraw failed: Insufficient funds.";
             _transactionLogger?.LogFailedTransaction(AccountNumber, errorMessage);
 
-            return OperationResult.Failed("Withdraw failed: Insuficient funds.");
+            return Result<BankAccount>.FailureWith("Withdraw failed: Insuficient funds.");
         }
             
         _balance = _balance.Subtract(amount);
         _transactionLogger?.LogWithdrawal(AccountNumber, amount, _balance);
         _accountNotifier?.NotifySuccessfulWithdrawal(AccountNumber, CustomerId, amount);
 
-        return OperationResult.Succeeded("Withdraw succeeded.");
+        return Result<BankAccount>.Success(this);
     }
 
     public Money GetBalance() => _balance;

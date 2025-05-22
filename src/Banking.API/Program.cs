@@ -25,7 +25,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ICustomerService, CustomerService>();
-builder.Services.AddScoped<IBankAccountService, BankAccountService>();
+//builder.Services.AddScoped<IBankAccountService, BankAccountService>();
 
 builder.Services.AddScoped<ICustomerRespository, CustomerRepository>();
 builder.Services.AddScoped<IBankAccountRepository, BankAccountRepository>();

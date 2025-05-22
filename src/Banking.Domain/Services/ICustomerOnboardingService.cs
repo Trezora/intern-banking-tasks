@@ -6,5 +6,5 @@ namespace Banking.Domain.Services;
 
 public interface ICustomerOnBoardingService
 {
-    OperationResult OnboardCustomer(Customer customer, Money initialBalance);
+    Result<Customer> OnboardCustomer(Customer customer, Money initialBalance);
 }

@@ -21,12 +21,12 @@ public class CustomerOnboardingService : ICustomerOnBoardingService
         _logger = logger;
         _defaultInitialBalance = defaultInitialBalance;
     }
-    public OperationResult OnboardCustomer(Customer customer, Money initialBalance)
+    public Result<Customer> OnboardCustomer(Customer customer, Money initialBalance)
     {
         var validationResult = _customerValidator.ValidateCustomerForOnboarding(customer);
-        if (!validationResult.Result)
+        if (!validationResult.IsSuccess)
         {
-            _logger.LogOnboardingFailure(customer, validationResult.Message);
+            _logger.LogOnboardingFailure(customer, validationResult.Error);
             return validationResult;
         }
 
@@ -34,6 +34,6 @@ public class CustomerOnboardingService : ICustomerOnBoardingService
         var account = customer.OpenNewAccount(effectiveInitialBalance);
 
         _logger.LogOnboardingSuccess(customer, account.AccountNumber, effectiveInitialBalance);
-        return OperationResult.Succeeded($"Customer {customer.FullName} successfully onboarded with initial balance of {effectiveInitialBalance:C}");
+        return Result<Customer>.Success(customer);
     }
 }

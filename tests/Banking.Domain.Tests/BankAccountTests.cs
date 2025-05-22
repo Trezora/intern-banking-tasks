@@ -58,8 +58,7 @@ public class BankAccountTests
         var operationResult = _customer.MakeDeposit(bankAccount, new Money(100.00m));
 
         // Assert
-        Assert.True(operationResult.Result);
-        Assert.Equal("Deposit succeeded.", operationResult.Message);
+        Assert.True(operationResult.IsSuccess);
         Assert.Equal(100.00m, bankAccount.GetBalance().Value);
     }
 
@@ -76,8 +75,8 @@ public class BankAccountTests
         var operationResult = _customer.MakeDeposit(bankAccount, new Money(0.00m));
 
         // Assert
-        Assert.False(operationResult.Result);
-        Assert.Equal("Deposit failed: Deposit money amount cannot be zero.", operationResult.Message);
+        Assert.False(operationResult.IsSuccess);
+        Assert.Equal("Deposit failed: Deposit money amount cannot be zero.", operationResult.Error);
         Assert.Equal(0.00m, bankAccount.GetBalance().Value);
     }
 
@@ -95,8 +94,7 @@ public class BankAccountTests
         var operationResult = _customer.MakeWithdraw(bankAccount, new Money(125.00m));
 
         // Assert
-        Assert.True(operationResult.Result);
-        Assert.Equal("Withdraw succeeded.", operationResult.Message);
+        Assert.True(operationResult.IsSuccess);
         Assert.Equal(75.00m, bankAccount.GetBalance().Value);
     }
 
@@ -114,8 +112,8 @@ public class BankAccountTests
         var operationResult = _customer.MakeWithdraw(bankAccount, new Money(225.00m));
 
         // Assert
-        Assert.False(operationResult.Result);
-        Assert.Equal("Withdraw failed: Insuficient funds.", operationResult.Message);
+        Assert.False(operationResult.IsSuccess);
+        Assert.Equal("Withdraw failed: Insuficient funds.", operationResult.Error);
         Assert.Equal(200.00m, bankAccount.GetBalance().Value);
     }
 
