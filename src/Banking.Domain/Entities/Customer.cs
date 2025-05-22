@@ -42,18 +42,18 @@ public sealed class Customer : AggregateRoot
         return newAccount;
     }
 
-    public OperationResult MakeDeposit(BankAccount bankAccount, Money amount)
+    public Result<BankAccount> MakeDeposit(BankAccount bankAccount, Money amount)
     {
         var depositOperationResult = bankAccount.Deposit(amount);
         
         return depositOperationResult;
     }
 
-    public OperationResult MakeWithdraw(BankAccount bankAccount, Money amount)
+    public Result<BankAccount> MakeWithdraw(BankAccount bankAccount, Money amount)
     {
         var withdrawOperationResult = bankAccount.Withdraw(amount);
 
-        if (!withdrawOperationResult.Result) 
+        if (!withdrawOperationResult.IsSuccess) 
             RaiseDomainEvent(new AccountOverdrawnEvent(CustomerId)); 
         
         return withdrawOperationResult;

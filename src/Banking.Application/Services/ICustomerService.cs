@@ -1,16 +1,15 @@
+using Banking.Application.DTOs;
 using Banking.Application.DTOs.Requests;
 using Banking.Application.DTOs.Responses;
+using Banking.Domain.Entities;
 using Banking.Domain.ValueObjects;
+using Banking.Shared.OperationResults;
 
 namespace Banking.Application.Services;
 
 public interface ICustomerService
 {
-    Task<ApiResponse> CreateCustomerAsync(CreateCustomerRequest request);
+    Task<Result<CustomerDto>> TryGetCustomerByIdAsync(Guid id);
 
-    Task<ApiResponse> OpenNewBankAccountAsync(CreateBankAccountRequest request);
-
-    Task<ApiResponse> GetCustomerByIdAsync(Guid id);
-
-    Task<ApiResponse> GetAllCustomerAsync();
+    Task<Result<IEnumerable<CustomerDto>>> TryGetAllCustomerAsync();
 }

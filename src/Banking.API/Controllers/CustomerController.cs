@@ -1,7 +1,8 @@
 using System.Threading.Tasks;
+using Banking.Application.Commands;
 using Banking.Application.DTOs.Requests;
-using Banking.Application.DTOs.Responses;
-using Banking.Application.Services;
+using Banking.Application.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Banking.API.Controllers;
@@ -10,82 +11,48 @@ namespace Banking.API.Controllers;
 [Route("api/[controller]")]
 public class CustomerController : ControllerBase
 {
-    private readonly ICustomerService _customerService;
-    public CustomerController(ICustomerService customerService)
+    private readonly IMediator _mediator;
+    public CustomerController(IMediator mediator)
     {
-        _customerService = customerService;
+        _mediator = mediator;
     }
 
-    [HttpPost("create")]
-    [ProducesResponseType(typeof (ApiResponse), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof (ApiResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerRequest request)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(new ApiResponse(false, "Invalid request data", ModelState));
-        }
-
-        var result = await _customerService.CreateCustomerAsync(request);
-
-        if (result.Success)
-        {
-            
-            var customerResponse = (CustomerCreateResponse)result.Data!;
-            return CreatedAtAction(nameof(GetCustomerById), new { id = customerResponse.CustomerId }, result);
-        }
-
-        return BadRequest(result);
-    }
-
-    [HttpPost("open_account")]
-    [ProducesResponseType(typeof (ApiResponse), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof (ApiResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> OpenNewAccount([FromBody] CreateBankAccountRequest request)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(new ApiResponse(false, "Invalid request data", ModelState));
-        }      
-
-        var result  = await _customerService.OpenNewBankAccountAsync(request);
-
-        if (result.Success)
-        {
-            var bankAccountResponse = (BankAccountCreateResponse)result.Data!;
-            return CreatedAtRoute("GetBankAccountById", new {id  = bankAccountResponse.AccountNumber}, result);
-        }
-
-        return BadRequest(result);
-    }
-
-    [HttpGet("{id}")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    [HttpGet("id")]
     public async Task<IActionResult> GetCustomerById(Guid id)
     {
-        var response = await _customerService.GetCustomerByIdAsync(id);
+        var query = new GetCustomerByIdQuery(id);
 
-        if (!response.Success)
-        {
-            return NotFound(response);
-        }
+        var result = await _mediator.Send(query);
 
-        return Ok(response);
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : NotFound(result.Error);
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAllCustomer()
+    public async Task<IActionResult> GetAllCustomers()
     {
-        var response = await _customerService.GetAllCustomerAsync();
+        var query = new GetAllCustomersQuery();
 
-        if (!response.Success)
-        {
-            return NotFound(response);
-        }
+        var result = await _mediator.Send(query);
 
-        return Ok(response);
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : NotFound(result.Error);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerRequest request)
+    {
+        if (!ModelState.IsValid) return BadRequest();
+
+        var command = new CreateCustomerCommand(request);
+
+        var result = await _mediator.Send(command);
+
+        return result.IsSuccess
+            ? CreatedAtAction(nameof(CreateCustomer), new { customerId = result.Value.CustomerId }, result.Value)
+            : BadRequest(result.Error);
+    }
+   
 }

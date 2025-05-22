@@ -5,5 +5,5 @@ namespace Banking.Domain.Services;
 
 public interface ICustomerValidator
 {
-    OperationResult ValidateCustomerForOnboarding(Customer customer);
+    Result<Customer> ValidateCustomerForOnboarding(Customer customer);
 }

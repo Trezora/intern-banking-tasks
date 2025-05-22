@@ -50,13 +50,13 @@ public class CustomerOnboardingTests
 
         _mockValidator
             .Setup(v => v.ValidateCustomerForOnboarding(_validCustomerWithValidAge))
-            .Returns(OperationResult.Succeeded("Customer is eligible for onboarding."));
+            .Returns(Result<Customer>.Success(_validCustomerWithInvalidAge));
 
         // Act
         var result = onboardedCustomerService.OnboardCustomer(_validCustomerWithValidAge, new Money(0));
 
         // Assert
-        Assert.True(result.Result);
+        Assert.True(result.IsSuccess);
 
         _mockLogger.Verify(
             l => l.LogOnboardingSuccess(
@@ -90,14 +90,14 @@ public class CustomerOnboardingTests
 
         _mockValidator
             .Setup(v => v.ValidateCustomerForOnboarding(_validCustomerWithInvalidAge))
-            .Returns(OperationResult.Failed(failureMessage));
+            .Returns(Result<Customer>.Failure(failureMessage));
 
         // Act
         var result = onboardingService.OnboardCustomer(_validCustomerWithInvalidAge, new Money(0.00m));
 
         // Assert
-        Assert.False(result.Result);
-        Assert.Equal(failureMessage, result.Message);
+        Assert.False(result.IsSuccess);
+        Assert.Equal(failureMessage, result.Error);
 
         _mockLogger.Verify(
             l => l.LogOnboardingFailure(

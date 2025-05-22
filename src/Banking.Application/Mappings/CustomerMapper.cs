@@ -15,7 +15,7 @@ public static class CustomerMapper
     private static readonly CustomerFactory _customerFactory = new();
 
     // We want to map a Customer enitity to a CustomerResponse
-    public static CustomerCreateResponse ToResponse(this Customer customer)
+    public static CustomerCreateResponse ToCustomerCreateResponse(this Customer customer)
     {
         return new CustomerCreateResponse
         {
@@ -31,7 +31,7 @@ public static class CustomerMapper
     {
         //var customerFactory = new CustomerFactory();
         var customer = _customerFactory.CreateCustomer(
-            new Name(request.FullName), 
+            new Name(request.FullName),
             new Email(request.Email),
             request.DateOfBirth
         );
