@@ -10,12 +10,15 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/tests/Domain.Tests/bin/Debug/net8.0/Domain.Tests.dll",
+            "program": "${workspaceFolder}/src/Banking.API/bin/Debug/net8.0/Banking.API.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/tests/Domain.Tests",
+            "cwd": "${workspaceFolder}/src/Banking.API",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
-            "console": "internalConsole",
-            "stopAtEntry": false
+            "console": "integratedTerminal",
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
         },
         {
             "name": ".NET Core Attach",

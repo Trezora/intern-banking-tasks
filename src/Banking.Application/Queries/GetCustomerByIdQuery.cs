@@ -1,6 +1,5 @@
 using Banking.Application.DTOs;
-using Banking.Application.DTOs.Responses;
-using Banking.Shared.OperationResults;
+using Banking.Domain.Shared;
 using MediatR;
 
 namespace Banking.Application.Queries;

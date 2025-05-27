@@ -1,10 +1,7 @@
 using Banking.Application.DTOs;
-using Banking.Application.DTOs.Responses;
 using Banking.Application.Mappings;
-using Banking.Domain.Entities;
 using Banking.Domain.Repositories;
-using Banking.Shared.OperationResults;
-using MediatR;
+using Banking.Domain.Shared;
 
 namespace Banking.Application.Services;
 

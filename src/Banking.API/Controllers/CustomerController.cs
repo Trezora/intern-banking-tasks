@@ -7,22 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Banking.API.Controllers;
 
-[ApiController]
 [Route("api/[controller]")]
-public class CustomerController : ControllerBase
+public sealed class CustomerController(ISender sender) : ApiController(sender)
 {
-    private readonly IMediator _mediator;
-    public CustomerController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
 
     [HttpGet("id")]
     public async Task<IActionResult> GetCustomerById(Guid id)
     {
         var query = new GetCustomerByIdQuery(id);
 
-        var result = await _mediator.Send(query);
+        var result = await Sender.Send(query);
 
         return result.IsSuccess
             ? Ok(result.Value)
@@ -34,7 +28,7 @@ public class CustomerController : ControllerBase
     {
         var query = new GetAllCustomersQuery();
 
-        var result = await _mediator.Send(query);
+        var result = await Sender.Send(query);
 
         return result.IsSuccess
             ? Ok(result.Value)
@@ -44,15 +38,13 @@ public class CustomerController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerRequest request)
     {
-        if (!ModelState.IsValid) return BadRequest();
-
         var command = new CreateCustomerCommand(request);
 
-        var result = await _mediator.Send(command);
+        var result = await Sender.Send(command);
 
         return result.IsSuccess
             ? CreatedAtAction(nameof(CreateCustomer), new { customerId = result.Value.CustomerId }, result.Value)
-            : BadRequest(result.Error);
+            : HandleFailure(result);
     }
    
 }

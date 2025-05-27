@@ -1,26 +1,17 @@
 using Banking.Application.DTOs;
-using Banking.Application.DTOs.Requests;
-using Banking.Application.DTOs.Responses;
 using Banking.Application.Mappings;
-using Banking.Domain.Entities;
-using Banking.Domain.Exceptions;
 using Banking.Domain.Repositories;
-using Banking.Domain.ValueObjects;
-using Banking.Shared.OperationResults;
-using MediatR;
+using Banking.Domain.Shared;
 
 namespace Banking.Application.Services;
 
 public class CustomerService : ICustomerService
-{   
+{
     private readonly ICustomerRespository _customerRepository;
-    private readonly IBankAccountRepository _bankAccountRepository;
 
-    public CustomerService(ICustomerRespository customerRespository, 
-                           IBankAccountRepository bankAccountRepository)
+    public CustomerService(ICustomerRespository customerRespository)
     {
         _customerRepository = customerRespository;
-        _bankAccountRepository = bankAccountRepository;
     }
 
     public async Task<Result<CustomerDto>> TryGetCustomerByIdAsync(Guid id)

@@ -7,12 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.14" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.13">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.13" />
+    <PackageReference Include="Rebus" Version="8.8.0" />
+    <PackageReference Include="Rebus.RabbitMq" Version="10.0.1" />
+    <PackageReference Include="Rebus.ServiceProvider" Version="10.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
@@ -20,7 +25,6 @@
     <ProjectReference Include="..\Banking.Application\Banking.Application.csproj" />
     <ProjectReference Include="..\Banking.Infrastructure\Banking.Infrastructure.csproj" />
     <ProjectReference Include="..\Banking.Domain\Banking.Domain.csproj" />
-    <ProjectReference Include="..\Banking.Shared\Banking.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 using Banking.Domain.Events;
 using Banking.Domain.Primitives;
 using Banking.Domain.ValueObjects;
-using Banking.Shared.OperationResults;
+using Banking.Domain.Shared;
 
 namespace Banking.Domain.Entities;
 
@@ -17,27 +17,37 @@ public sealed class Customer : AggregateRoot
     #pragma warning disable CS8618
     private Customer() : base() { } // This is required by EF Core
 
-    internal Customer(
+    public static Customer Create(
         CustomerId id,
         Name fullName,
         Email email,
-        DateTime dateOfBirth) : base(id)
+        DateTime dateOfBirth)
     {
-        CustomerId = id;
-        FullName = fullName;
-        EmailAddress = email;
-        DateOfBirth = dateOfBirth;
+        var customer = new Customer
+        {
+            CustomerId = id,
+            FullName = fullName,
+            EmailAddress = email,
+            DateOfBirth = dateOfBirth
+        };
 
-        RaiseDomainEvent(new CustomerRegisteredEvent(CustomerId));
+        customer.RaiseDomainEvent(new CustomerCreatedDomainEvent(Guid.NewGuid(), id));
+
+        return customer;
     }
+
 
     public BankAccount OpenNewAccount(Money initialDeposit)
     {
-        BankAccount newAccount = initialDeposit.Value > 0
-            ? new BankAccount(Guid.NewGuid(), initialDeposit, CustomerId)
-            : new BankAccount(Guid.NewGuid(), CustomerId);
+        BankAccount newAccount = BankAccount.Create(Guid.NewGuid(),  CustomerId, initialDeposit);
 
         _accounts.Add(newAccount);
+
+        RaiseDomainEvent(new BankAccountCreatedDomainEvent(
+                            Guid.NewGuid(),
+                            newAccount.AccountNumber,
+                            CustomerId)
+                        );
 
         return newAccount;
     }
@@ -52,9 +62,6 @@ public sealed class Customer : AggregateRoot
     public Result<BankAccount> MakeWithdraw(BankAccount bankAccount, Money amount)
     {
         var withdrawOperationResult = bankAccount.Withdraw(amount);
-
-        if (!withdrawOperationResult.IsSuccess) 
-            RaiseDomainEvent(new AccountOverdrawnEvent(CustomerId)); 
         
         return withdrawOperationResult;
     }

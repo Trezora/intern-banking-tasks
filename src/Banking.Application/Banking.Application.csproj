@@ -2,12 +2,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Banking.Domain\Banking.Domain.csproj" />
-    <ProjectReference Include="..\Banking.Shared\Banking.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="MediatR" Version="12.5.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
+    <PackageReference Include="Rebus" Version="8.8.0" />
+    <PackageReference Include="Rebus.RabbitMq" Version="10.0.1" />
   </ItemGroup>
 
   <PropertyGroup>

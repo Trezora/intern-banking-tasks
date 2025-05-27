@@ -1,9 +1,5 @@
 using Banking.Application.DTOs;
-using Banking.Application.DTOs.Requests;
-using Banking.Application.DTOs.Responses;
-using Banking.Domain.Entities;
-using Banking.Domain.ValueObjects;
-using Banking.Shared.OperationResults;
+using Banking.Domain.Shared;
 
 namespace Banking.Application.Services;
 

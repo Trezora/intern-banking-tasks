@@ -18,7 +18,6 @@ public class CustomerRepository : ICustomerRespository
     public async Task AddAsync(Customer customer)
     {
         await _context.Customers.AddAsync(customer);
-        await _context.SaveChangesAsync();
     }
 
     public async Task<List<Customer>> GetAllCustomerAsync()
@@ -35,4 +34,9 @@ public class CustomerRepository : ICustomerRespository
             .FirstOrDefaultAsync(c => c.CustomerId == new CustomerId(customerId));
     }
 
+    public async Task<bool> CustomerExistsWithSameEmailAsync(Email email)
+    {
+        return await _context.Customers
+            .AnyAsync(c => c.EmailAddress == email);
+    }
 }

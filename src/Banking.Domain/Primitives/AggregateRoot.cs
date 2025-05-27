@@ -3,8 +3,8 @@ namespace Banking.Domain.Primitives;
 
 public abstract class AggregateRoot : Entity
 {   
-    private readonly List<IDomainEvent> _domainEvents = new();
-    public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+    private readonly List<DomainEvent> _domainEvents = new();
+    public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
     protected AggregateRoot() : base()
     {
@@ -15,9 +15,9 @@ public abstract class AggregateRoot : Entity
     {
     }
 
-    public void RaiseDomainEvent(IDomainEvent domainEvent)
+    public void RaiseDomainEvent(DomainEvent @domainEvent)
     {
-        _domainEvents.Add(domainEvent);
+        _domainEvents.Add(@domainEvent);
     }
 
     public void ClearDomainEvents()

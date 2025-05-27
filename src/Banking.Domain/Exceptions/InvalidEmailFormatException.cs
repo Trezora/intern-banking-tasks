@@ -1,4 +1,4 @@
-using Banking.Shared.Exceptions;
+using Banking.Domain.Shared.Exceptions;
 
 namespace Banking.Domain.Exceptions;
 
