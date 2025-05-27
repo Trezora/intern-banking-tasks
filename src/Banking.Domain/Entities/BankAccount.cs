@@ -1,7 +1,6 @@
 using Banking.Domain.Primitives;
-using Banking.Domain.Services;
 using Banking.Domain.ValueObjects;
-using Banking.Shared.OperationResults;
+using Banking.Domain.Shared;
 
 namespace Banking.Domain.Entities;
 
@@ -18,53 +17,33 @@ public sealed class BankAccount : Entity
     }
     
     public CustomerId CustomerId { get; private set; }
-
-    private readonly ITransactionLogger? _transactionLogger;
-    private readonly IAccountNotifier? _accountNotifier;
     
     #pragma warning disable CS8618
     private BankAccount() : base() { } // This is required by EF Core
 
-    public BankAccount(
+    public static BankAccount Create(
         Guid accountNumber,
-        Money balance,
         CustomerId customerId,
-        ITransactionLogger? transactionLogger = null,
-        IAccountNotifier? accountNotifier = null) : base(accountNumber)
+        Money balance)
     {
-        AccountNumber = accountNumber;
-        _balance = balance;
-        CustomerId = customerId;
-        _transactionLogger = transactionLogger;
-        _accountNotifier = accountNotifier;
-    }
+        var bankAccount = new BankAccount
+        {
+            AccountNumber = accountNumber,
+            CustomerId = customerId,
+            Balance = balance
+        };
 
-    public BankAccount(
-        Guid accountNumber,
-        CustomerId customerId,
-        ITransactionLogger? transactionLogger = null,
-        IAccountNotifier? accountNotifier = null) : base(accountNumber)
-    {
-        AccountNumber = accountNumber;
-        _balance = new Money(0.00m);
-        CustomerId = customerId;
-        _transactionLogger = transactionLogger;
-        _accountNotifier = accountNotifier;
+        return bankAccount;
     }
 
     internal Result<BankAccount> Deposit(Money amount)
-    {   
+    {
         if (amount.Value == 0)
         {
-            var errorMessage = "Deposit failed: Deposit money amount cannot be zero.";
-            _transactionLogger?.LogFailedTransaction(AccountNumber, errorMessage);
-
             return Result<BankAccount>.FailureWith("Deposit failed: Deposit money amount cannot be zero.");
         }
-             
+
         _balance = _balance.Add(amount);
-        _transactionLogger?.LogDeposit(AccountNumber, amount, _balance);
-        _accountNotifier?.NotifySuccessfulDeposit(AccountNumber, CustomerId, amount);
 
         return Result<BankAccount>.Success(this);
     }
@@ -73,23 +52,15 @@ public sealed class BankAccount : Entity
     {
         if (amount.Value == 0)
         {   
-            var errorMessage = "Withdraw failed: Withdraw money amount cannot be zero.";
-           _transactionLogger?.LogFailedTransaction(AccountNumber, errorMessage);
-
             return Result<BankAccount>.FailureWith("Withdraw failed: Withdraw Money amount cannot be zero.");
         }
 
         if (amount.Value > _balance.Value)
-        {   
-            var errorMessage = "Withdraw failed: Insufficient funds.";
-            _transactionLogger?.LogFailedTransaction(AccountNumber, errorMessage);
-
+        {
             return Result<BankAccount>.FailureWith("Withdraw failed: Insuficient funds.");
         }
             
         _balance = _balance.Subtract(amount);
-        _transactionLogger?.LogWithdrawal(AccountNumber, amount, _balance);
-        _accountNotifier?.NotifySuccessfulWithdrawal(AccountNumber, CustomerId, amount);
 
         return Result<BankAccount>.Success(this);
     }

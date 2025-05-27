@@ -6,23 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Banking.API.Controllers;
 
-[ApiController]
 [Route("api/[controller]")]
-public class BankAccountController : ControllerBase
+public sealed class BankAccountController(ISender sender) : ApiController(sender)
 {
-    private readonly IMediator _mediator;
-
-    public BankAccountController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
+    
     [HttpGet("account_number")]
     public async Task<IActionResult> GetBankAccountByAccountNumber(Guid accountNumber)
     {
         var query = new GetBankAccountByAccountNumberQuery(accountNumber);
 
-        var result = await _mediator.Send(query);
+        var result = await Sender.Send(query);
 
         return result.IsSuccess
             ? Ok(result.Value)
@@ -34,7 +27,7 @@ public class BankAccountController : ControllerBase
     {
         var query = new GetBankAccountsByCustomerIdQuery(customerId);
 
-        var result = await _mediator.Send(query);
+        var result = await Sender.Send(query);
 
         return result.IsSuccess
             ? Ok(result.Value)
@@ -48,10 +41,10 @@ public class BankAccountController : ControllerBase
 
         var command = new CreateBankAccountCommand(request);
 
-        var result = await _mediator.Send(command);
+        var result = await Sender.Send(command);
 
         return result.IsSuccess
             ? CreatedAtAction(nameof(CreateBankAccount), new { accountNumber = result.Value.AccountNumber }, result.Value)
-            : BadRequest(result.Error);
+            : HandleFailure(result);
     }
 }

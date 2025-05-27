@@ -1,46 +1,58 @@
 using System.Reflection;
-using Banking.Application.Behaviors;
+using Banking.Application.Behaviours;
+using Banking.Application.Commands;
 using Banking.Application.EventHandlers;
 using Banking.Application.Services;
-using Banking.Domain.Primitives;
 using Banking.Domain.Repositories;
+using Banking.Domain.Shared;
 using Banking.Infrastructure.Persistence.Context;
 using Banking.Infrastructure.Persistence.Repositories;
+using Banking.Infrastructure.Persistence.Uow;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Add DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
+// Add services
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 
+// Add Validators
+builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
+builder.Services.AddValidatorsFromAssembly(typeof(CreateCustomerCommand).Assembly);
+builder.Services.AddValidatorsFromAssembly(typeof(CreateBankAccountCommand).Assembly);
+
+// Add Repositories
+builder.Services.AddScoped<ICustomerRespository, CustomerRepository>();
+builder.Services.AddScoped<IBankAccountRepository, BankAccountRepository>();
+
+// Add Unit of Work
+builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
+
+// Add MediatR
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+    cfg.RegisterServicesFromAssembly(typeof(CustomerCreatedDomainEventHandler).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(BankAccountCreatedDomainEventHandler).Assembly);
+});
+
+// Swagger & MVC
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<ICustomerService, CustomerService>();
-//builder.Services.AddScoped<IBankAccountService, BankAccountService>();
-
-builder.Services.AddScoped<ICustomerRespository, CustomerRepository>();
-builder.Services.AddScoped<IBankAccountRepository, BankAccountRepository>();
-
-builder.Services.AddMediatR(cfg => {
-    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-    
-    cfg.RegisterServicesFromAssembly(typeof(CustomerRegisteredEventHandler).Assembly);
-    
-    cfg.AddOpenBehavior(typeof(DomainEventToMediatorBridge<,>));
-});
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
+// Swagger & Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -52,4 +64,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-

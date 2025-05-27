@@ -4,8 +4,6 @@ namespace Banking.Application.DTOs.Requests;
 
 public sealed record CreateBankAccountRequest
 {
-    public decimal Balance { get; set; }
-
-    [Required]
+    public decimal InitialDeposit { get; set; }
     public Guid CustomerId { get; set; }
 }

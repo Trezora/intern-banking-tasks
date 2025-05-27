@@ -1,41 +1,40 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace Banking.Shared.OperationResults;
+namespace Banking.Domain.Shared;
 
 public class Result
 {
     public bool IsSuccess { get; }
-    public string Error { get; }
+    public Error Error { get; }
 
-    protected Result(bool isSuccess, string error)
+    protected Result(bool isSuccess, Error error)
     {
         IsSuccess = isSuccess;
         Error = error;
     }
 
     public static Result Success()
-        => new(true, string.Empty);
+        => new(true, new Error(""));
     public static Result Failure(string error)
-        => new(false, error);
+        => new(false, new Error(error));
 }
 
-public sealed class Result<T> : Result
+public class Result<T> : Result
 {
     public T? Value { get; }
 
-    // This attribute tells the compiler that Value is not null when IsSuccess is true
     [MemberNotNullWhen(true, nameof(Value))]
     public new bool IsSuccess => base.IsSuccess;
 
-    private Result(bool isSuccess, T? value, string error) 
+    protected Result(bool isSuccess, T? value, Error error) 
         : base(isSuccess, error)
     {
         Value = value;
     }
 
     public static Result<T> Success(T value)
-        => new(true, value, string.Empty);
+        => new(true, value, new Error(""));
     
     public static Result<T> FailureWith(string error)
-        => new(false, default, error);
+        => new(false, default, new Error(error));
 }

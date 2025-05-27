@@ -1,8 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <ProjectReference Include="..\Banking.Shared\Banking.Shared.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Calabonga.Results" Version="1.1.0" />
     <PackageReference Include="MediatR" Version="12.5.0" />
   </ItemGroup>

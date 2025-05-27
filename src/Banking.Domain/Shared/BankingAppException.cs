@@ -1,4 +1,4 @@
-namespace Banking.Shared.Exceptions;
+namespace Banking.Domain.Shared.Exceptions;
 
 public abstract class BankingAppException : Exception
 {

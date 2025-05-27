@@ -20,10 +20,10 @@ public static class BankAccountMapper
 
     public static BankAccount ToBankAccountEntity(this CreateBankAccountRequest request)
     {
-        return new BankAccount(
+        return BankAccount.Create(
             Guid.NewGuid(), 
-            new Money (request.Balance), 
-            new CustomerId (request.CustomerId)
+            new CustomerId (request.CustomerId),
+            new Money(request.InitialDeposit)
         );
     }
 

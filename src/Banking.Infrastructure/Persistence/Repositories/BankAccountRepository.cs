@@ -18,7 +18,6 @@ public class BankAccountRepository : IBankAccountRepository
     public async Task AddAsync(BankAccount bankAccount)
     {
         await _context.BankAccounts.AddAsync(bankAccount);
-        await _context.SaveChangesAsync(); 
     }
     
     public async Task<BankAccount?> GetByAccountNumberAsync(Guid accountNumber)

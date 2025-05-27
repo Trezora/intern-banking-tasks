@@ -2,7 +2,7 @@ using Banking.Application.DTOs;
 using Banking.Application.Mappings;
 using Banking.Application.Queries;
 using Banking.Domain.Repositories;
-using Banking.Shared.OperationResults;
+using Banking.Domain.Shared;
 using MediatR;
 
 namespace Banking.Application.QueryHandlers;

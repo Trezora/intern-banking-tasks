@@ -8,4 +8,5 @@ public interface ICustomerRespository
     Task<Customer?> GetByCustomerIdAsync(Guid customerId);
     Task<List<Customer>> GetAllCustomerAsync();
     Task AddAsync(Customer customer);
+    Task<bool> CustomerExistsWithSameEmailAsync(Email email);
 }
