@@ -40,7 +40,7 @@ public sealed class BankAccount : Entity
     {
         if (amount.Value == 0)
         {
-            return Result<BankAccount>.FailureWith("Deposit failed: Deposit money amount cannot be zero.");
+            return Result<BankAccount>.FailureWith("Deposit.", "Deposit money amount cannot be zero.");
         }
 
         _balance = _balance.Add(amount);
@@ -52,12 +52,12 @@ public sealed class BankAccount : Entity
     {
         if (amount.Value == 0)
         {   
-            return Result<BankAccount>.FailureWith("Withdraw failed: Withdraw Money amount cannot be zero.");
+            return Result<BankAccount>.FailureWith("Withdraw", "Withdraw Money amount cannot be zero.");
         }
 
         if (amount.Value > _balance.Value)
         {
-            return Result<BankAccount>.FailureWith("Withdraw failed: Insuficient funds.");
+            return Result<BankAccount>.FailureWith("Withdraw", "Insuficient funds.");
         }
             
         _balance = _balance.Subtract(amount);

@@ -20,7 +20,7 @@ public class GetBankAccountsByCustomerIdQueryHandler
         var bankAccounts = await _bankAccountRepository.GetAccountsByCustomerIdAsync(request.CustomerId);
 
         if (bankAccounts == null || !bankAccounts.Any())
-            return Result<IEnumerable<BankAccountDto>>.FailureWith("No bank accounts found.");
+            return Result<IEnumerable<BankAccountDto>>.FailureWith("Bank account", "No bank accounts found.");
 
         return Result<IEnumerable<BankAccountDto>>.Success(bankAccounts.Select(b => b.ToDto()));
     }

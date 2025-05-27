@@ -19,7 +19,7 @@ public class CustomerService : ICustomerService
         var customer = await _customerRepository.GetByCustomerIdAsync(id);
 
         if (customer == null)
-            return Result<CustomerDto>.FailureWith($"Customer with ID {id} was not found.");
+            return Result<CustomerDto>.FailureWith("Customer.", $"Customer with ID {id} was not found.");
     
 
         return Result<CustomerDto>.Success(customer.ToDto());
@@ -31,7 +31,7 @@ public class CustomerService : ICustomerService
         var customers = await _customerRepository.GetAllCustomerAsync();
 
         if (customers == null || !customers.Any())
-            return Result<IEnumerable<CustomerDto>>.FailureWith("No customers found.");
+            return Result<IEnumerable<CustomerDto>>.FailureWith("Customer.", "No customers found.");
         
 
         var customersDto = customers.Select(c => c.ToDto());

@@ -22,7 +22,7 @@ public class GetBankAccountByAccountNumberQueryHandler
 
         if (bankAccount == null)
             return Result<BankAccountDto>
-                .FailureWith($"Bank account with account number {request.AccountNumber} not found.");
+                .FailureWith("Bank account.", $"Bank account with account number {request.AccountNumber} not found.");
 
         return Result<BankAccountDto>.Success(bankAccount.ToDto());
     }
