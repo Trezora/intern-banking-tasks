@@ -37,8 +37,6 @@ public sealed class BankAccountController(ISender sender) : ApiController(sender
     [HttpPost]
     public async Task<IActionResult> CreateBankAccount([FromBody] CreateBankAccountRequest request)
     {
-        if (!ModelState.IsValid) return BadRequest();
-
         var command = new CreateBankAccountCommand(request);
 
         var result = await Sender.Send(command);
