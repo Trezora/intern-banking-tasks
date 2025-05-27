@@ -19,10 +19,11 @@ public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery,
     {
         var customer = await _customerRespository.GetByCustomerIdAsync(request.CustomerId);
 
-        if (customer == null)
-            return Result<CustomerDto>.FailureWith($"Customer with ID {request.CustomerId} not found.");
+        if (customer is null)
+        {
+            return Result<CustomerDto>.FailureWith("Customer.", $"Customer with ID {request.CustomerId} was not found.");
+        }
 
         return Result<CustomerDto>.Success(customer.ToDto());
     }
-
 }

@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Banking.Application.CommandHandlers;
 
-public class CreateBankAccountCommandHandler : IRequestHandler<CreateBankAccountCommand, Result<BankAccountCreateResponse>>
+internal sealed class CreateBankAccountCommandHandler : IRequestHandler<CreateBankAccountCommand, Result<BankAccountCreateResponse>>
 {
     private readonly ICustomerService _customerService;
     private readonly IBankAccountRepository _bankAccountRepository;
@@ -29,7 +29,7 @@ public class CreateBankAccountCommandHandler : IRequestHandler<CreateBankAccount
 
         if (!result.IsSuccess || result.Value == null)
             return Result<BankAccountCreateResponse>
-                .FailureWith($"Customer with ID {request.BankAccountRequest.CustomerId} not found.");
+                .FailureWith("Customer ID.", $"Customer with ID {request.BankAccountRequest.CustomerId} not found.");
 
         var bankAccount = request.BankAccountRequest.ToBankAccountEntity();
 

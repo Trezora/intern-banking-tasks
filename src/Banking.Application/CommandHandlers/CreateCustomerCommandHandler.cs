@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Banking.Application.CommandHandlers;
 
-public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<CustomerCreateResponse>>
+internal sealed class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<CustomerCreateResponse>>
 {
     private readonly ICustomerRespository _customerRespository;
     private readonly IUnitOfWork _unitOfWork;
@@ -24,7 +24,7 @@ public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerComman
 
         if (exists)
         {
-            return Result<CustomerCreateResponse>.FailureWith("A customer with the same email already exists.");
+            return Result<CustomerCreateResponse>.FailureWith("Email.", "A customer with the same email already exists.");
         }
 
         var customer = request.CustomerRequest.ToCustomerEntity();

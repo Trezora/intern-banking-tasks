@@ -285,3 +285,123 @@ Goal: Abstract infrastructure behind clean repository contracts.
         Async signatures
 
     Bonus: Add IBankAccountRepository
+
+
+#####################################################
+
+
+Goal: Build a command and handler to register a customer via the application layer.
+
+    Deliverable:
+        Create RegisterCustomerCommand with:
+            FullName, EmailAddress, InitialDeposit
+
+        Create RegisterCustomerHandler that:
+            Validates command
+            Creates Customer aggregate
+            Adds an initial BankAccount
+            Persists via ICustomerRepository
+
+    Assessment Focus:
+        Proper command structure
+        MediatR usage (request/response flow)
+        Application-to-domain transition logic
+
+Bonus: Raise CustomerRegisteredEvent and log it
+
+
+#####################################################
+
+
+Goal: Retrieve a customer using a MediatR Query with projection.
+
+    Deliverable:
+        Create GetCustomerByIdQuery with Guid CustomerId
+        Handler fetches Customer via repository
+        Returns a flattened CustomerDto:
+            CustomerId, FullName, Email, Accounts
+
+Assessment Focus:
+    Query/DTO mapping
+    Read-only flow with DTO projection
+    Null check + not-found handling
+
+Bonus: Add INotFoundException and use it
+
+
+#####################################################
+
+
+Goal: Enforce business-level validation at the application boundary.
+
+Deliverable:
+    Add RegisterCustomerCommandValidator:
+        FullName required
+        EmailAddress valid format
+        InitialDeposit ≥ minimum value (e.g., 100)
+
+Assessment Focus:
+    FluentValidation setup
+    Rule chaining
+    Integration with MediatR pipeline
+
+Bonus: Register a generic validation behavior via MediatR pipeline
+
+
+#####################################################
+
+
+Goal: Ensure transactional consistency in write operations.
+
+    Deliverable:
+        Interface: IUnitOfWork
+            Task SaveChangesAsync();
+
+        In RegisterCustomerHandler:
+            Wrap repository logic and call unitOfWork.SaveChangesAsync()
+
+Assessment Focus:
+    Use of UoW abstraction
+    Consistent transaction boundaries
+    No direct EF save calls in application layer
+
+Bonus: Mock IUnitOfWork in unit tests
+
+
+#####################################################
+
+
+Goal: Apply unit testing on CQRS handlers
+
+Deliverable:
+    Use xUnit + Moq or NSubstitute
+    Write tests for:
+        RegisterCustomerHandler
+        GetCustomerByIdHandler
+        Cover happy path and one failure case (e.g., null input or validation error)
+
+Assessment Focus:
+    Handler isolation (mock dependencies)
+    Test naming
+    Testing both success and failure scenarios
+
+Bonus: Use FluentAssertions for expressive assertions
+
+
+#####################################################
+
+
+Goal: Connect HTTP layer to CQRS pipeline cleanly
+
+Deliverable:
+    Controller: CustomerController
+        POST /api/customers → RegisterCustomerCommand
+        GET /api/customers/{id} → GetCustomerByIdQuery
+        Inject and use IMediator in controller
+
+Assessment Focus:
+    Clean controller (no logic!)
+    Request mapping to command/query
+    Proper status codes: 201 Created, 200 OK, 404 NotFound
+
+Bonus: Return Location header after create

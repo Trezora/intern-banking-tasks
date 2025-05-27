@@ -20,7 +20,7 @@ public class GetAllCustomersQueryHandler : IRequestHandler<GetAllCustomersQuery,
         var customers = await _customerRespository.GetAllCustomerAsync();
 
         if (customers == null || !customers.Any())
-            return Result<IEnumerable<CustomerDto>>.FailureWith("No customers found.");
+            return Result<IEnumerable<CustomerDto>>.FailureWith("Customer.", "No customers found.");
 
         return Result<IEnumerable<CustomerDto>>.Success(customers.Select(c => c.ToDto()));
     }

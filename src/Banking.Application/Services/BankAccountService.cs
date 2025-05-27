@@ -19,7 +19,7 @@ public class BankAccountService : IBankAccountService
         var bankAccount = await _bankAccountRepository.GetByAccountNumberAsync(id);
 
         if (bankAccount == null)
-            return Result<BankAccountDto>.FailureWith($"Bank account with account number {id} was not found.");
+            return Result<BankAccountDto>.FailureWith("Bank account", $"Bank account with account number {id} was not found.");
     
         return Result<BankAccountDto>.Success(bankAccount.ToDto());
     }
@@ -29,7 +29,7 @@ public class BankAccountService : IBankAccountService
         var bankAccounts = await _bankAccountRepository.GetAccountsByCustomerIdAsync(id);
 
         if (bankAccounts == null || !bankAccounts.Any())
-            return Result<IEnumerable<BankAccountDto>>.FailureWith("No bank Accounts found.");
+            return Result<IEnumerable<BankAccountDto>>.FailureWith("Bank account", "No bank Accounts found.");
 
         var BankAccountDto = bankAccounts.Select(c => c.ToDto());
         
