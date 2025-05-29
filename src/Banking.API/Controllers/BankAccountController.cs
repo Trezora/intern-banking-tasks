@@ -9,8 +9,8 @@ namespace Banking.API.Controllers;
 [Route("api/[controller]")]
 public sealed class BankAccountController(ISender sender) : ApiController(sender)
 {
-    
-    [HttpGet("account_number")]
+
+    [HttpGet("{accountNumber}")]
     public async Task<IActionResult> GetBankAccountByAccountNumber(Guid accountNumber)
     {
         var query = new GetBankAccountByAccountNumberQuery(accountNumber);
@@ -22,7 +22,7 @@ public sealed class BankAccountController(ISender sender) : ApiController(sender
             : NotFound(result.Error);
     }
 
-    [HttpGet("customer_id")]
+    [HttpGet("customer_id{customerId}")]
     public async Task<IActionResult> GetBankAccountsByCustomerId(Guid customerId)
     {
         var query = new GetBankAccountsByCustomerIdQuery(customerId);
