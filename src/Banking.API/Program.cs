@@ -1,10 +1,12 @@
 using System.Reflection;
+using Banking.Application.Abstractions.Caching;
 using Banking.Application.Behaviours;
 using Banking.Application.Commands;
 using Banking.Application.EventHandlers;
 using Banking.Application.Services;
 using Banking.Domain.Repositories;
 using Banking.Domain.Shared;
+using Banking.Infrastructure.Caching;
 using Banking.Infrastructure.Persistence.Context;
 using Banking.Infrastructure.Persistence.Repositories;
 using Banking.Infrastructure.Persistence.Uow;
@@ -23,6 +25,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Add services
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<ICacheService, CacheService>();
+
+// Add Redis
+builder.Services.AddStackExchangeRedisCache(redisOptions =>
+{
+    string connection = builder.Configuration
+        .GetConnectionString("Redis")!;
+
+    redisOptions.Configuration = connection;
+});
 
 // Add Validators
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));

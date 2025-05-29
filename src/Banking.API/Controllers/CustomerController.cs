@@ -11,7 +11,7 @@ namespace Banking.API.Controllers;
 public sealed class CustomerController(ISender sender) : ApiController(sender)
 {
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> GetCustomerById(Guid id)
     {
         var query = new GetCustomerByIdQuery(id);
