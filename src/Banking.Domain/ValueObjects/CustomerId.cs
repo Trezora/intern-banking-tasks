@@ -15,6 +15,13 @@ public sealed class CustomerId : ValueObject
         Value = value;
     }
 
+    // Private constructor for EF Core
+    private CustomerId()
+    {
+        // EF sets this via reflection
+        Value = Guid.Empty;
+    }
+
     public static implicit operator Guid(CustomerId customerId) => customerId.Value;
 
     public static implicit operator CustomerId(Guid value) => new(value);
