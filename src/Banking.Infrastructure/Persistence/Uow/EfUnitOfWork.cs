@@ -1,5 +1,5 @@
-using System.ComponentModel;
 using Banking.Domain.Shared;
+using Banking.Infrastructure.Identity;
 using Banking.Infrastructure.Persistence.Context;
 using MediatR;
 
@@ -8,16 +8,23 @@ namespace Banking.Infrastructure.Persistence.Uow;
 public class EfUnitOfWork : IUnitOfWork
 {   
     private readonly AppDbContext _appDbContext;
+    private readonly IdentityDbContext _identityDbContext;
     private readonly IMediator _mediator;
 
-    public EfUnitOfWork(AppDbContext appDbContext, IMediator mediator)
+    public EfUnitOfWork(
+        AppDbContext appDbContext,
+        IdentityDbContext identityDbContext,
+        IMediator mediator)
     {
         _appDbContext = appDbContext;
+        _identityDbContext = identityDbContext;
         _mediator = mediator;
     }
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var result = await _appDbContext.SaveChangesAsync(cancellationToken);
+        var appResult = await _appDbContext.SaveChangesAsync(cancellationToken);
+
+        var identityResult = await _identityDbContext.SaveChangesAsync(cancellationToken);
 
         var domainEvents = _appDbContext.GetDomainEvents();
 
@@ -29,6 +36,6 @@ public class EfUnitOfWork : IUnitOfWork
 
         _appDbContext.ClearDomainEvents();
 
-        return result;
+        return appResult + identityResult;
     }
 }

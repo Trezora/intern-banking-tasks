@@ -1,4 +1,6 @@
 using System.Reflection;
+using Banking.API.OptionsSetup;
+using Banking.Application.Abstractions;
 using Banking.Application.Abstractions.Caching;
 using Banking.Application.Behaviours;
 using Banking.Application.Commands;
@@ -6,12 +8,17 @@ using Banking.Application.EventHandlers;
 using Banking.Application.Services;
 using Banking.Domain.Repositories;
 using Banking.Domain.Shared;
+using Banking.Infrastructure.Authentication;
 using Banking.Infrastructure.Caching;
+using Banking.Infrastructure.Identity;
 using Banking.Infrastructure.Persistence.Context;
 using Banking.Infrastructure.Persistence.Repositories;
 using Banking.Infrastructure.Persistence.Uow;
 using FluentValidation;
+using MassTransit;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,10 +30,29 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
-// Add services
+builder.Services.AddDbContext<IdentityDbContext>(options =>
+{
+    var identityConnectionString = builder.Configuration.GetConnectionString("IdentityConnection");
+    options.UseMySql(identityConnectionString, ServerVersion.AutoDetect(identityConnectionString));
+});
+
+// Identity Services (fix here)
+builder.Services.AddIdentityCore<ApplicationUser>()
+    .AddRoles<IdentityRole<Guid>>()
+    .AddEntityFrameworkStores<IdentityDbContext>();
+
+// Add Services
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICacheService, CacheService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer();
+
+builder.Services.ConfigureOptions<JwtOptionsSetup>();
+builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
 // Add Redis
 builder.Services.AddStackExchangeRedisCache(redisOptions =>
 {
@@ -34,6 +60,23 @@ builder.Services.AddStackExchangeRedisCache(redisOptions =>
         .GetConnectionString("Redis")!;
 
     redisOptions.Configuration = connection;
+});
+
+// Add MassTransit
+builder.Services.AddMassTransit(busConfigurator =>
+{
+    busConfigurator.SetKebabCaseEndpointNameFormatter(); //article-created-event
+
+    busConfigurator.UsingRabbitMq((context, configurator) =>
+    {
+        configurator.Host(new Uri(builder.Configuration["MessageBroker:Host"]!), h =>
+        {
+            h.Username(builder.Configuration["MessageBroker:Username"]!);
+            h.Password(builder.Configuration["MessageBroker:Password"]!);
+        });
+
+        configurator.ConfigureEndpoints(context);
+    });
 });
 
 // Add Validators
@@ -63,6 +106,13 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Seed Roles
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await RoleSeeder.SeedRolesAsync(services);
+}
+
 
 // Swagger & Middleware
 if (app.Environment.IsDevelopment())
@@ -72,7 +122,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();
