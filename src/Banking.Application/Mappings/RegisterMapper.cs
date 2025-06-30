@@ -13,7 +13,7 @@ public static class RegisterMapper
         return new RegisterResponse
         {
             UserId = user.UserId,             
-            CustomerId = customer.Id,             
+            CustomerId = customer.CustomerId,            
             FirstName = user.FirstName,
             LastName = user.LastName,
             Email = user.EmailAddress,
