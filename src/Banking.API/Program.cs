@@ -102,7 +102,16 @@ builder.Services.AddMediatR(cfg =>
 // Swagger & MVC
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Banking API",
+        Version = "v1",
+        Description = "Banking backend API",
+    });
+});
+
 
 var app = builder.Build();
 
