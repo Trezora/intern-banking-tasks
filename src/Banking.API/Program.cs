@@ -165,4 +165,29 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+
+// Auto-migrate databases on startup
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var appContext = services.GetRequiredService<AppDbContext>();
+        var identityContext = services.GetRequiredService<IdentityDbContext>();
+        
+        await appContext.Database.MigrateAsync();
+        await identityContext.Database.MigrateAsync();
+        
+        await RoleSeeder.SeedRolesAsync(services);
+    }
+    catch (Exception ex)
+    {
+        // Log the exception
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating the database.");
+        throw; // Re-throw to see the actual error
+    }
+}
+
+
 app.Run();
