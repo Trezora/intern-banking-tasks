@@ -140,6 +140,11 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
+if (!app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage(); // This will show detailed errors
+}
+
 // Seed Roles
 using (var scope = app.Services.CreateScope())
 {
