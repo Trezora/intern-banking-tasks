@@ -11,33 +11,27 @@ namespace Banking.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterDatabase()
-                .Annotation("MySql:CharSet", "utf8mb4");
-
             migrationBuilder.CreateTable(
                 name: "customers",
                 columns: table => new
                 {
-                    customer_id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    full_name = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    email = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    date_of_birth = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    customer_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    full_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    date_of_birth = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_customers", x => x.customer_id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "bank_accounts",
                 columns: table => new
                 {
-                    account_number = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    balance = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    customer_id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                    account_number = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    balance = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    customer_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,8 +42,7 @@ namespace Banking.Infrastructure.Migrations
                         principalTable: "customers",
                         principalColumn: "customer_id",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_bank_accounts_customer_id",

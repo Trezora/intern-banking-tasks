@@ -15,7 +15,7 @@ using Banking.Infrastructure.Persistence.Context;
 using Banking.Infrastructure.Persistence.Repositories;
 using Banking.Infrastructure.Persistence.Uow;
 using FluentValidation;
-using MassTransit;
+// using MassTransit; // Commented out - not using MassTransit for now
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -23,17 +23,33 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add DbContext
+// Add DbContext with retry policy for Azure SQL Database
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+    options.UseSqlServer(connectionString, sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: new[] { 40613, 40197, 40501, 49918, 49919, 49920, 4060, 40532, 40549, 40550, 40551, 40552, 40553 });
+        
+        sqlOptions.CommandTimeout(60);
+    });
 });
 
 builder.Services.AddDbContext<IdentityDbContext>(options =>
 {
     var identityConnectionString = builder.Configuration.GetConnectionString("IdentityConnection");
-    options.UseMySql(identityConnectionString, ServerVersion.AutoDetect(identityConnectionString));
+    options.UseSqlServer(identityConnectionString, sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: new[] { 40613, 40197, 40501, 49918, 49919, 49920, 4060, 40532, 40549, 40550, 40551, 40552, 40553 });
+        
+        sqlOptions.CommandTimeout(60);
+    });
 });
 
 // Identity Services (fix here)
@@ -47,13 +63,14 @@ builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer();
 
 builder.Services.ConfigureOptions<JwtOptionsSetup>();
 builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
-// Add Redis
+
+// Add Redis - COMMENTED OUT FOR NOW (not free in Azure)
+/*
 builder.Services.AddStackExchangeRedisCache(redisOptions =>
 {
     string connection = builder.Configuration
@@ -61,8 +78,14 @@ builder.Services.AddStackExchangeRedisCache(redisOptions =>
 
     redisOptions.Configuration = connection;
 });
+*/
 
-// Add MassTransit
+// Add In-Memory Distributed Cache as fallback (free alternative to Redis)
+builder.Services.AddMemoryCache();
+builder.Services.AddDistributedMemoryCache();
+
+// Add MassTransit - COMMENTED OUT FOR NOW (not free in Azure)
+/*
 builder.Services.AddMassTransit(busConfigurator =>
 {
     busConfigurator.SetKebabCaseEndpointNameFormatter(); //article-created-event
@@ -78,6 +101,7 @@ builder.Services.AddMassTransit(busConfigurator =>
         configurator.ConfigureEndpoints(context);
     });
 });
+*/
 
 // Add Validators
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
@@ -112,6 +136,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -122,13 +147,15 @@ using (var scope = app.Services.CreateScope())
     await RoleSeeder.SeedRolesAsync(services);
 }
 
-
 // Swagger & Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Add health check endpoint
+app.UseHealthChecks("/health");
 
 app.UseHttpsRedirection();
 

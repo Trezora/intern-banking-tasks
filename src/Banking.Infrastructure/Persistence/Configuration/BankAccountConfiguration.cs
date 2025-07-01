@@ -23,6 +23,7 @@ public class BankAccountConfiguration : IEntityTypeConfiguration<BankAccount>
 
         builder.Property(b => b.Balance)
             .HasColumnName("balance")
+            .HasPrecision(18, 2)
             .IsRequired();
 
         builder.Property(b => b.CustomerId)
