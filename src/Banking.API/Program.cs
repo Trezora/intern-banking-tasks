@@ -137,7 +137,7 @@ using (var scope = app.Services.CreateScope())
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.MapGet("/", () => Results.Redirect("/swagger"));
+//app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
