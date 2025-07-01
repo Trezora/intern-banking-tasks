@@ -2,7 +2,6 @@ using Banking.Application.Commands;
 using Banking.Application.DTOs.Requests;
 using Banking.Application.Queries;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Banking.API.Controllers;
@@ -23,7 +22,6 @@ public sealed class CustomerController(ISender sender) : ApiController(sender)
             : NotFound(result.Error);
     }
 
-    [Authorize(Roles = "admin")]
     [HttpGet]
     public async Task<IActionResult> GetAllCustomers()
     {

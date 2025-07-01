@@ -9,14 +9,17 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
-    <PackageReference Include="MassTransit.RabbitMQ" Version="8.4.1" />
+    <!-- MassTransit commented out for now (not free in Azure) -->
+    <!-- <PackageReference Include="MassTransit.RabbitMQ" Version="8.4.1" /> -->
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.14" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.13">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.13" />
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.13" />
+    <!-- Redis package commented out for now (not free in Azure) -->
+    <!-- <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.5" /> -->
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 

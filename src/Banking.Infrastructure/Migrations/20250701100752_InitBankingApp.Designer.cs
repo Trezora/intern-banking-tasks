@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Banking.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250623130500_InitBankingApp")]
+    [Migration("20250701100752_InitBankingApp")]
     partial class InitBankingApp
     {
         /// <inheritdoc />
@@ -21,23 +21,24 @@ namespace Banking.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.13")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Banking.Domain.Entities.BankAccount", b =>
                 {
                     b.Property<Guid>("AccountNumber")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("account_number");
 
                     b.Property<decimal>("Balance")
-                        .HasColumnType("decimal(65,30)")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
                         .HasColumnName("balance");
 
                     b.Property<Guid>("CustomerId")
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("customer_id");
 
                     b.HasKey("AccountNumber");
@@ -50,21 +51,21 @@ namespace Banking.Infrastructure.Migrations
             modelBuilder.Entity("Banking.Domain.Entities.Customer", b =>
                 {
                     b.Property<Guid>("CustomerId")
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("customer_id");
 
                     b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime(6)")
+                        .HasColumnType("datetime2")
                         .HasColumnName("date_of_birth");
 
                     b.Property<string>("EmailAddress")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("email");
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("full_name");
 
                     b.HasKey("CustomerId");
