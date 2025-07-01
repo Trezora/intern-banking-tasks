@@ -5,7 +5,7 @@ on:
     branches:
       - main
 env:
-  AZURE_WEBAPP_NAME: banking-service
+  AZURE_WEBAPP_NAME: banking-app
   AZURE_WEBAPP_PACKAGE_PATH: "./src/Banking.API/publish"
   DOTNET_VERSION: "8.x"
   SOLUTION_PATH: "intern-banking-tasks.sln"
