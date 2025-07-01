@@ -109,24 +109,33 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
+// Enable detailed errors for debugging
+app.UseDeveloperExceptionPage();
+
 // Database setup and migrations
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var appContext = services.GetRequiredService<AppDbContext>();
-    var identityContext = services.GetRequiredService<IdentityDbContext>();
-    
-    await appContext.Database.MigrateAsync();
-    await identityContext.Database.MigrateAsync();
-    await RoleSeeder.SeedRolesAsync(services);
+    try
+    {
+        var appContext = services.GetRequiredService<AppDbContext>();
+        var identityContext = services.GetRequiredService<IdentityDbContext>();
+        
+        await appContext.Database.MigrateAsync();
+        await identityContext.Database.MigrateAsync();
+        await RoleSeeder.SeedRolesAsync(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Database setup failed: {Message}", ex.Message);
+        throw;
+    }
 }
 
 // Configure middleware pipeline
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapGet("/", () => Results.Redirect("/swagger"));
 
